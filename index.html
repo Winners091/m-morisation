@@ -22,13 +22,20 @@
             transform: rotateY(180deg);
         }
 
+        /* Modification de la timeline pour l'adapter aux mobiles */
         .timeline-line {
             position: absolute;
-            left: 50%;
+            left: 20px; /* Déplacé du centre vers la gauche sur mobile */
             width: 2px;
             height: 100%;
             background-color: #2563eb;
-            transform: translateX(-50%);
+        }
+        
+        @media (min-width: 768px) {
+            .timeline-line {
+                left: 50%; /* Revient au centre sur desktop */
+                transform: translateX(-50%);
+            }
         }
 
         .tab-content {
@@ -59,779 +66,1042 @@
         .flashcard .back {
             transform: rotateY(180deg);
         }
+        
+        /* Styles spécifiques pour mobile */
+        .mobile-timeline-item {
+            margin-left: 30px; /* Espace pour la ligne verticale */
+            position: relative;
+        }
+        
+        .mobile-timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -30px;
+            top: 50%;
+            width: 15px;
+            height: 2px;
+            background-color: #2563eb;
+        }
+        
+        /* Ajustement pour les onglets sur mobile */
+        @media (max-width: 767px) {
+            .tab-buttons {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+            
+            .tab-btn {
+                font-size: 0.875rem;
+                padding: 0.5rem;
+                flex: 1 1 45%;
+                display: flex;
+                justify-content: center;
+                text-align: center;
+            }
+            
+            .tab-btn svg {
+                width: 1rem;
+                height: 1rem;
+            }
+        }
     </style>
 </head>
-<body class="min-h-screen bg-gray-100 p-5">
-    <div class="max-w-7xl mx-auto bg-white rounded-lg shadow-md p-6">
-        <h1 class="text-3xl font-bold text-center text-pink-600 mb-8 pb-3 border-b-2 border-pink-600">
+<body class="min-h-screen bg-gray-100 p-3 md:p-5">
+    <div class="max-w-7xl mx-auto bg-white rounded-lg shadow-md p-4 md:p-6">
+        <h1 class="text-2xl md:text-3xl font-bold text-center text-pink-600 mb-6 md:mb-8 pb-3 border-b-2 border-pink-600">
             Mémorisation - Littérature et Stylistique
         </h1>
 
-        <!-- Onglets -->
-        <div class="flex flex-wrap gap-2 mb-6">
-            <button onclick="openTab('periodsTab')" class="tab-btn active px-4 py-2 rounded-md font-semibold transition-colors flex items-center gap-2 bg-blue-600 text-white">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <!-- Onglets avec classes responsive -->
+        <div class="tab-buttons flex flex-wrap gap-2 mb-6">
+            <button onclick="openTab('periodsTab')" class="tab-btn active px-3 py-2 md:px-4 md:py-2 rounded-md font-semibold transition-colors flex items-center gap-1 md:gap-2 bg-blue-600 text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 md:w-5 md:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
                     <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
                 </svg>
-                Courants Littéraires
+                <span class="text-sm md:text-base">Courants</span>
             </button>
-            <button onclick="openTab('lexicalTab')" class="tab-btn px-4 py-2 rounded-md font-semibold transition-colors flex items-center gap-2 bg-gray-200 hover:bg-gray-300">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <button onclick="openTab('lexicalTab')" class="tab-btn px-3 py-2 md:px-4 md:py-2 rounded-md font-semibold transition-colors flex items-center gap-1 md:gap-2 bg-gray-200 hover:bg-gray-300">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 md:w-5 md:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                 </svg>
-                Champs Lexicaux
+                <span class="text-sm md:text-base">Lexicaux</span>
             </button>
-            <button onclick="openTab('stylisticsTab')" class="tab-btn px-4 py-2 rounded-md font-semibold transition-colors flex items-center gap-2 bg-gray-200 hover:bg-gray-300">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <button onclick="openTab('stylisticsTab')" class="tab-btn px-3 py-2 md:px-4 md:py-2 rounded-md font-semibold transition-colors flex items-center gap-1 md:gap-2 bg-gray-200 hover:bg-gray-300">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 md:w-5 md:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
                     <circle cx="12" cy="13" r="4"></circle>
                 </svg>
-                Figures de Style
+                <span class="text-sm md:text-base">Figures de style</span>
             </button>
-            <button onclick="openTab('techniquesTab')" class="tab-btn px-4 py-2 rounded-md font-semibold transition-colors flex items-center gap-2 bg-gray-200 hover:bg-gray-300">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <button onclick="openTab('techniquesTab')" class="tab-btn px-3 py-2 md:px-4 md:py-2 rounded-md font-semibold transition-colors flex items-center gap-1 md:gap-2 bg-gray-200 hover:bg-gray-300">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 md:w-5 md:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                     <polyline points="9 22 9 12 15 12 15 22"></polyline>
                 </svg>
-                Techniques
+                <span class="text-sm md:text-base">Techniques</span>
             </button>
-            <button onclick="openTab('quizTab')" class="tab-btn px-4 py-2 rounded-md font-semibold transition-colors flex items-center gap-2 bg-gray-200 hover:bg-gray-300">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <button onclick="openTab('procedesTab')" class="tab-btn px-3 py-2 md:px-4 md:py-2 rounded-md font-semibold transition-colors flex items-center gap-1 md:gap-2 bg-gray-200 hover:bg-gray-300">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M15.5 13a3.5 3.5 0 0 0 -3.5 3.5v1a3.5 3.5 0 0 0 7 0v-1.8" />
+                    <path d="M8.5 13a3.5 3.5 0 0 1 3.5 3.5v1a3.5 3.5 0 0 1 -7 0v-1.8" />
+                    <path d="M17.5 16a3.5 3.5 0 0 0 0 -7h-.5" />
+                    <path d="M19 9.3v-2.8a3.5 3.5 0 0 0 -7 0" />
+                    <path d="M6.5 16a3.5 3.5 0 0 1 0 -7h.5" />
+                    <path d="M5 9.3v-2.8a3.5 3.5 0 0 1 7 0v10" />
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                <span class="text-sm md:text-base">Procédés Littéraires</span>
+            </button>
+            <button onclick="openTab('quizTab')" class="tab-btn px-3 py-2 md:px-4 md:py-2 rounded-md font-semibold transition-colors flex items-center gap-1 md:gap-2 bg-gray-200 hover:bg-gray-300">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 md:w-5 md:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                     <polyline points="14 2 14 8 20 8"></polyline>
                     <line x1="16" y1="13" x2="8" y2="13"></line>
                     <line x1="16" y1="17" x2="8" y2="17"></line>
                     <polyline points="10 9 9 9 8 9"></polyline>
                 </svg>
-                Quiz
+                <span class="text-sm md:text-base">Quiz</span>
             </button>
         </div>
 
-        <!-- COURANTS LITTÉRAIRES -->
-<div id="periodsTab" class="tab-content active">
-    <h2 class="text-2xl font-bold text-blue-600 mb-6">Frise Chronologique des Courants Littéraires</h2>
-    
-    <div class="relative">
-        <div class="timeline-line"></div>
-        
-        <!-- Moyen Âge -->
-        <div class="mb-8 flex justify-start">
-            <div class="w-full md:w-1/2 bg-white p-6 rounded-lg shadow-md">
-                <h3 class="text-xl font-bold text-blue-600">Moyen Âge (XIe-XVe siècle)</h3>
-                <p class="text-gray-600 italic mb-2">Littérature courtoise, religieuse, épique</p>
-                <p class="mb-2"><strong>Auteurs :</strong> Chrétien de Troyes, François Villon</p>
-                <div class="bg-gray-100 p-3 rounded mb-2">
-                    <p class="italic">"Frères humains qui après nous vivez, / N'ayez les cœurs contre nous endurcis"</p>
-                    <p class="text-sm text-gray-600">- La Ballade des pendus, Villon</p>
-                </div>
-                <div class="bg-blue-50 p-3 rounded">
-                    <p><strong>Effet :</strong> Ton méditatif qui suscite la compassion et rappelle la fragilité de la condition humaine</p>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Renaissance -->
-        <div class="mb-8 flex justify-end">
-            <div class="w-full md:w-1/2 bg-white p-6 rounded-lg shadow-md">
-                <h3 class="text-xl font-bold text-blue-600">Renaissance (XVIe siècle)</h3>
-                <p class="text-gray-600 italic mb-2">Humanisme, redécouverte des Anciens, célébration de l'homme</p>
-                <p class="mb-2"><strong>Auteurs :</strong> Rabelais, Montaigne, Du Bellay, Ronsard</p>
-                <div class="bg-gray-100 p-3 rounded mb-2">
-                    <p class="italic">"Science sans conscience n'est que ruine de l'âme"</p>
-                    <p class="text-sm text-gray-600">- Pantagruel, Rabelais</p>
-                </div>
-                <div class="bg-blue-50 p-3 rounded">
-                    <p><strong>Effet :</strong> Expression de l'idéal humaniste qui valorise l'équilibre entre savoir et morale</p>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Classicisme -->
-        <div class="mb-8 flex justify-start">
-            <div class="w-full md:w-1/2 bg-white p-6 rounded-lg shadow-md">
-                <h3 class="text-xl font-bold text-blue-600">Classicisme (XVIIe siècle)</h3>
-                <p class="text-gray-600 italic mb-2">Raison, règle des trois unités, bienséance</p>
-                <p class="mb-2"><strong>Auteurs :</strong> Molière, Racine, Corneille, La Fontaine</p>
-                <div class="bg-gray-100 p-3 rounded mb-2">
-                    <p class="italic">"Je le vis, je rougis, je pâlis à sa vue ; / Un trouble s'éleva dans mon âme éperdue"</p>
-                    <p class="text-sm text-gray-600">- Phèdre, Racine</p>
-                </div>
-                <div class="bg-blue-50 p-3 rounded">
-                    <p><strong>Effet :</strong> Évocation du conflit intérieur par des symptômes physiques</p>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Les Lumières -->
-        <div class="mb-8 flex justify-end">
-            <div class="w-full md:w-1/2 bg-white p-6 rounded-lg shadow-md">
-                <h3 class="text-xl font-bold text-blue-600">Les Lumières (XVIIIe siècle)</h3>
-                <p class="text-gray-600 italic mb-2">Esprit critique, combat contre les préjugés, valorisation de la raison</p>
-                <p class="mb-2"><strong>Auteurs :</strong> Voltaire, Rousseau, Montesquieu, Diderot</p>
-                <div class="bg-gray-100 p-3 rounded mb-2">
-                    <p class="italic">"Il faut cultiver notre jardin"</p>
-                    <p class="text-sm text-gray-600">- Candide, Voltaire</p>
-                </div>
-                <div class="bg-blue-50 p-3 rounded">
-                    <p><strong>Effet :</strong> Conclusion philosophique qui encourage l'action concrète plutôt que les spéculations abstraites</p>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Romantisme -->
-        <div class="mb-8 flex justify-start">
-            <div class="w-full md:w-1/2 bg-white p-6 rounded-lg shadow-md">
-                <h3 class="text-xl font-bold text-blue-600">Romantisme (début XIXe siècle)</h3>
-                <p class="text-gray-600 italic mb-2">Exaltation des sentiments, mélancolie, nature, individualisme</p>
-                <p class="mb-2"><strong>Auteurs :</strong> Victor Hugo, Lamartine, Musset, Chateaubriand</p>
-                <div class="bg-gray-100 p-3 rounded mb-2">
-                    <p class="italic">"Un seul être vous manque et tout est dépeuplé"</p>
-                    <p class="text-sm text-gray-600">- L'Isolement, Lamartine</p>
-                </div>
-                <div class="bg-blue-50 p-3 rounded">
-                    <p><strong>Effet :</strong> Expression intense du sentiment de solitude et d'abandon</p>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Réalisme -->
-        <div class="mb-8 flex justify-end">
-            <div class="w-full md:w-1/2 bg-white p-6 rounded-lg shadow-md">
-                <h3 class="text-xl font-bold text-blue-600">Réalisme (milieu XIXe siècle)</h3>
-                <p class="text-gray-600 italic mb-2">Description objective, critique sociale, documentation</p>
-                <p class="mb-2"><strong>Auteurs :</strong> Balzac, Flaubert, Stendhal, Maupassant</p>
-                <div class="bg-gray-100 p-3 rounded mb-2">
-                    <p class="italic">"La maison où l'on fabriquait, où l'on vendait l'onguent merveilleux, s'appelait, comme de nos jours, la Maison Nucingen"</p>
-                    <p class="text-sm text-gray-600">- Balzac</p>
-                </div>
-                <div class="bg-blue-50 p-3 rounded">
-                    <p><strong>Effet :</strong> Création d'un effet de réel par la précision documentaire</p>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Naturalisme -->
-        <div class="mb-8 flex justify-start">
-            <div class="w-full md:w-1/2 bg-white p-6 rounded-lg shadow-md">
-                <h3 class="text-xl font-bold text-blue-600">Naturalisme (fin XIXe siècle)</h3>
-                <p class="text-gray-600 italic mb-2">Déterminisme, influence du milieu, hérédité</p>
-                <p class="mb-2"><strong>Auteurs :</strong> Zola, Huysmans</p>
-                <div class="bg-gray-100 p-3 rounded mb-2">
-                    <p class="italic">"Gervaise avait attendu Lantier jusqu'à deux heures du matin..."</p>
-                    <p class="text-sm text-gray-600">- L'Assommoir, Zola</p>
-                </div>
-                <div class="bg-blue-50 p-3 rounded">
-                    <p><strong>Effet :</strong> Description crue qui expose la condition ouvrière sans idéalisation</p>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Symbolisme -->
-        <div class="mb-8 flex justify-end">
-            <div class="w-full md:w-1/2 bg-white p-6 rounded-lg shadow-md">
-                <h3 class="text-xl font-bold text-blue-600">Symbolisme (fin XIXe siècle)</h3>
-                <p class="text-gray-600 italic mb-2">Suggestion, correspondances, musicalité</p>
-                <p class="mb-2"><strong>Auteurs :</strong> Baudelaire, Verlaine, Rimbaud, Mallarmé</p>
-                <div class="bg-gray-100 p-3 rounded mb-2">
-                    <p class="italic">"Les parfums, les couleurs et les sons se répondent"</p>
-                    <p class="text-sm text-gray-600">- Correspondances, Baudelaire</p>
-                </div>
-                <div class="bg-blue-50 p-3 rounded">
-                    <p><strong>Effet :</strong> Évocation des synesthésies qui invitent à percevoir le monde différemment</p>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Surréalisme -->
-        <div class="mb-8 flex justify-start">
-            <div class="w-full md:w-1/2 bg-white p-6 rounded-lg shadow-md">
-                <h3 class="text-xl font-bold text-blue-600">Surréalisme (XXe siècle)</h3>
-                <p class="text-gray-600 italic mb-2">Libération de l'inconscient, écriture automatique, rêve</p>
-                <p class="mb-2"><strong>Auteurs :</strong> André Breton, Apollinaire, Éluard</p>
-                <div class="bg-gray-100 p-3 rounded mb-2">
-                    <p class="italic">"L'homme qui ne peut s'imaginer un cheval galopant sur une tomate est un idiot !"</p>
-                    <p class="text-sm text-gray-600">- Breton</p>
-                </div>
-                <div class="bg-blue-50 p-3 rounded">
-                    <p><strong>Effet :</strong> Provocation qui bouscule les conventions logiques pour libérer l'imagination</p>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Existentialisme -->
-        <div class="mb-8 flex justify-end">
-            <div class="w-full md:w-1/2 bg-white p-6 rounded-lg shadow-md">
-                <h3 class="text-xl font-bold text-blue-600">Existentialisme (XXe siècle)</h3>
-                <p class="text-gray-600 italic mb-2">Liberté, engagement, absurdité de l'existence</p>
-                <p class="mb-2"><strong>Auteurs :</strong> Sartre, Camus, Simone de Beauvoir</p>
-                <div class="bg-gray-100 p-3 rounded mb-2">
-                    <p class="italic">"L'enfer, c'est les autres"</p>
-                    <p class="text-sm text-gray-600">- Huis clos, Sartre</p>
-                </div>
-                <div class="bg-blue-50 p-3 rounded">
-                    <p><strong>Effet :</strong> Formule percutante qui exprime l'aliénation fondamentale de l'être humain</p>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Nouveau Roman -->
-        <div class="mb-8 flex justify-start">
-            <div class="w-full md:w-1/2 bg-white p-6 rounded-lg shadow-md">
-                <h3 class="text-xl font-bold text-blue-600">Nouveau Roman (XXe siècle)</h3>
-                <p class="text-gray-600 italic mb-2">Remise en question du récit traditionnel</p>
-                <p class="mb-2"><strong>Auteurs :</strong> Robbe-Grillet, Duras, Sarraute</p>
-                <div class="bg-gray-100 p-3 rounded mb-2">
-                    <p class="italic">"Sur la petite table laquée, le verre à demi plein de quelque chose de rose pâle..."</p>
-                    <p class="text-sm text-gray-600">- La Jalousie, Robbe-Grillet</p>
-                </div>
-                <div class="bg-blue-50 p-3 rounded">
-                    <p><strong>Effet :</strong> Description clinique qui désoriente le lecteur en refusant l'interprétation psychologique</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Optional: Add memory tips section if needed -->
-    <div class="bg-gray-50 p-6 rounded-lg mt-8">
-        <h3 class="text-xl font-bold text-blue-600 mb-4">Astuces de mémorisation</h3>
-        <p class="mb-3">Pour retenir la chronologie des courants littéraires, créez un acronyme avec les premières lettres : <strong>MRCLRRNSEN</strong> (Moyen Âge, Renaissance, Classicisme, Lumières, Romantisme, Réalisme, Naturalisme, Symbolisme, Existentialisme, Nouveau Roman).</p>
-        <p class="mb-3">Associez chaque mouvement à une image forte :</p>
-        <ul class="list-disc pl-6">
-            <li>Moyen Âge : un château fort</li>
-            <li>Renaissance : un homme de Vitruve (dessin de Léonard de Vinci)</li>
-            <li>Classicisme : des colonnes grecques (ordre)</li>
-            <li>Lumières : une bougie qui éclaire un livre</li>
-            <li>Romantisme : un cœur sur fond de tempête</li>
-            <li>Réalisme : un miroir reflétant la rue</li>
-            <li>Naturalisme : un microscope examinant une plante</li>
-            <li>Symbolisme : un rêve coloré avec des correspondances</li>
-            <li>Surréalisme : une montre molle (Dali)</li>
-            <li>Existentialisme : un homme au bord d'un précipice</li>
-            <li>Nouveau Roman : un puzzle incomplet</li>
-        </ul>
-    </div>
-</div>
-
-<div id="lexicalTab" class="tab-content">
-    <h2 class="text-2xl font-bold text-blue-600 mb-6">Les Champs Lexicaux Essentiels</h2>
-    
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Flashcard Nature -->
-        <div class="flashcard perspective-1000 h-64 cursor-pointer" onclick="toggleCard(this)">
-            <div class="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d">
-                <div class="absolute w-full h-full bg-blue-600 text-white p-6 rounded-lg flex items-center justify-center text-2xl font-bold">
-                    Nature
-                </div>
-                <div class="absolute w-full h-full bg-white p-6 rounded-lg shadow-md backface-hidden rotate-y-180">
-                    <h3 class="font-bold mb-2">Termes :</h3>
-                    <p class="mb-2">végétation, paysage, météo, saisons, animaux</p>
-                    <h3 class="font-bold mb-2">Exemple :</h3>
-                    <p class="italic mb-2">Les sanglots longs des violons de l'automne blessent mon cœur d'une langueur monotone (Verlaine)</p>
-                    <h3 class="font-bold mb-2">Effet :</h3>
-                    <p>Crée une atmosphère mélancolique en associant la saison automnale à un état d'âme</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Flashcard Sentiments -->
-        <div class="flashcard perspective-1000 h-64 cursor-pointer" onclick="toggleCard(this)">
-            <div class="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d">
-                <div class="absolute w-full h-full bg-red-600 text-white p-6 rounded-lg flex items-center justify-center text-2xl font-bold">
-                    Sentiments
-                </div>
-                <div class="absolute w-full h-full bg-white p-6 rounded-lg shadow-md backface-hidden rotate-y-180">
-                    <h3 class="font-bold mb-2">Termes :</h3>
-                    <p class="mb-2">amour, haine, mélancolie, joie, tristesse, colère</p>
-                    <h3 class="font-bold mb-2">Exemple :</h3>
-                    <p class="italic mb-2">J'ai plus de souvenirs que si j'avais mille ans. [...] Je suis un cimetière abhorré de la lune (Baudelaire, <em>Spleen</em>)</p>
-                    <h3 class="font-bold mb-2">Effet :</h3>
-                    <p>Intensifie l'expression du mal-être existentiel et de l'ennui profond</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Flashcard Corps -->
-        <div class="flashcard perspective-1000 h-64 cursor-pointer" onclick="toggleCard(this)">
-            <div class="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d">
-                <div class="absolute w-full h-full bg-blue-500 text-white p-6 rounded-lg flex items-center justify-center text-2xl font-bold">
-                    Corps
-                </div>
-                <div class="absolute w-full h-full bg-white p-6 rounded-lg shadow-md backface-hidden rotate-y-180">
-                    <h3 class="font-bold mb-2">Termes :</h3>
-                    <p class="mb-2">parties du corps, sensations, mouvements, perceptions</p>
-                    <h3 class="font-bold mb-2">Exemple :</h3>
-                    <p class="italic mb-2">Ses yeux profonds sont faits de vide et de ténèbres, / Et son crâne, de fleurs artistement coiffé (Baudelaire, <em>Danse macabre</em>)</p>
-                    <h3 class="font-bold mb-2">Effet :</h3>
-                    <p>Crée une image macabre qui confronte le lecteur à la réalité de la mort sous des apparences séduisantes</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Flashcard Temps -->
-        <div class="flashcard perspective-1000 h-64 cursor-pointer" onclick="toggleCard(this)">
-            <div class="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d">
-                <div class="absolute w-full h-full bg-gray-600 text-white p-6 rounded-lg flex items-center justify-center text-2xl font-bold">
-                    Temps
-                </div>
-                <div class="absolute w-full h-full bg-white p-6 rounded-lg shadow-md backface-hidden rotate-y-180">
-                    <h3 class="font-bold mb-2">Termes :</h3>
-                    <p class="mb-2">temporalité, chronologie, époques, durée, instantanéité</p>
-                    <h3 class="font-bold mb-2">Exemple :</h3>
-                    <p class="italic mb-2">Ô temps, suspends ton vol ! et vous, heures propices, / Suspendez votre cours ! (Lamartine, <em>Le Lac</em>)</p>
-                    <h3 class="font-bold mb-2">Effet :</h3>
-                    <p>Exprime le désir impossible d'arrêter le temps face à l'expérience du bonheur</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Flashcard Espace -->
-        <div class="flashcard perspective-1000 h-64 cursor-pointer" onclick="toggleCard(this)">
-            <div class="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d">
-                <div class="absolute w-full h-full bg-orange-500 text-white p-6 rounded-lg flex items-center justify-center text-2xl font-bold">
-                    Espace
-                </div>
-                <div class="absolute w-full h-full bg-white p-6 rounded-lg shadow-md backface-hidden rotate-y-180">
-                    <h3 class="font-bold mb-2">Termes :</h3>
-                    <p class="mb-2">lieux, déplacement, géographie, orientation</p>
-                    <h3 class="font-bold mb-2">Exemple :</h3>
-                    <p class="italic mb-2">Paris est un vieillard laborieux qui sue ; / Paris est un penseur (Hugo, <em>Les Contemplations</em>)</p>
-                    <h3 class="font-bold mb-2">Effet :</h3>
-                    <p>Donne vie à la ville par la personnification, permettant de la percevoir comme un organisme vivant</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Flashcard Religion -->
-        <div class="flashcard perspective-1000 h-64 cursor-pointer" onclick="toggleCard(this)">
-            <div class="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d">
-                <div class="absolute w-full h-full bg-purple-600 text-white p-6 rounded-lg flex items-center justify-center text-2xl font-bold">
-                    Religion
-                </div>
-                <div class="absolute w-full h-full bg-white p-6 rounded-lg shadow-md backface-hidden rotate-y-180">
-                    <h3 class="font-bold mb-2">Termes :</h3>
-                    <p class="mb-2">divin, sacré, spiritualité, croyances, rites</p>
-                    <h3 class="font-bold mb-2">Exemple :</h3>
-                    <p class="italic mb-2">Dieu n'est pas ! Dieu n'est plus ! [...] Ils ont trouvé la nuit. C'est bien ; demeurez-y ! (Hugo)</p>
-                    <h3 class="font-bold mb-2">Effet :</h3>
-                    <p>Crée un questionnement spirituel profond sur l'absence divine, confrontant le lecteur à la foi</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Flashcard Guerre/Conflit -->
-        <div class="flashcard perspective-1000 h-64 cursor-pointer" onclick="toggleCard(this)">
-            <div class="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d">
-                <div class="absolute w-full h-full bg-black text-white p-6 rounded-lg flex items-center justify-center text-2xl font-bold">
-                    Guerre/Conflit
-                </div>
-                <div class="absolute w-full h-full bg-white p-6 rounded-lg shadow-md backface-hidden rotate-y-180">
-                    <h3 class="font-bold mb-2">Termes :</h3>
-                    <p class="mb-2">combat, violence, armes, stratégie, victoire/défaite</p>
-                    <h3 class="font-bold mb-2">Exemple :</h3>
-                    <p class="italic mb-2">Et les os des héros blanchissent la plaine (Corneille, <em>Le Cid</em>)</p>
-                    <h3 class="font-bold mb-2">Effet :</h3>
-                    <p>Évoque de manière saisissante les conséquences de la guerre, soulignant la vanité de la gloire militaire</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Flashcard Art -->
-        <div class="flashcard perspective-1000 h-64 cursor-pointer" onclick="toggleCard(this)">
-            <div class="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d">
-                <div class="absolute w-full h-full bg-indigo-400 text-white p-6 rounded-lg flex items-center justify-center text-2xl font-bold">
-                    Art
-                </div>
-                <div class="absolute w-full h-full bg-white p-6 rounded-lg shadow-md backface-hidden rotate-y-180">
-                    <h3 class="font-bold mb-2">Termes :</h3>
-                    <p class="mb-2">création, esthétique, beauté, œuvre, inspiration</p>
-                    <h3 class="font-bold mb-2">Exemple :</h3>
-                    <p class="italic mb-2">Musicienne du silence (Mallarmé, <em>Sainte</em>)</p>
-                    <h3 class="font-bold mb-2">Effet :</h3>
-                    <p>Traduit par l'oxymore la nature paradoxale de l'art, invitant à une réflexion sur l'essence immatérielle de la création artistique</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Flashcard Social -->
-        <div class="flashcard perspective-1000 h-64 cursor-pointer" onclick="toggleCard(this)">
-            <div class="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d">
-                <div class="absolute w-full h-full bg-yellow-800 text-white p-6 rounded-lg flex items-center justify-center text-2xl font-bold">
-                    Social
-                </div>
-                <div class="absolute w-full h-full bg-white p-6 rounded-lg shadow-md backface-hidden rotate-y-180">
-                    <h3 class="font-bold mb-2">Termes :</h3>
-                    <p class="mb-2">classes, hiérarchie, condition, société, pouvoir</p>
-                    <h3 class="font-bold mb-2">Exemple :</h3>
-                    <p class="italic mb-2">Pour qui sont ces serpents qui sifflent sur vos têtes ? (Racine, <em>Andromaque</em>)</p>
-                    <h3 class="font-bold mb-2">Effet :</h3>
-                    <p>Suggère par la métaphore des serpents les intrigues et dangers du pouvoir, créant une atmosphère d'angoisse et de menace</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Flashcard Connaissance -->
-        <div class="flashcard perspective-1000 h-64 cursor-pointer" onclick="toggleCard(this)">
-            <div class="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d">
-                <div class="absolute w-full h-full bg-yellow-500 text-white p-6 rounded-lg flex items-center justify-center text-2xl font-bold">
-                    Connaissance
-                </div>
-                <div class="absolute w-full h-full bg-white p-6 rounded-lg shadow-md backface-hidden rotate-y-180">
-                    <h3 class="font-bold mb-2">Termes :</h3>
-                    <p class="mb-2">savoir, ignorance, philosophie, science, apprentissage</p>
-                    <h3 class="font-bold mb-2">Exemple :</h3>
-                    <p class="italic mb-2">Heureux qui, comme Ulysse, a fait un beau voyage [...] Puis est rentré, plein d'usage et raison (Du Bellay)</p>
-                    <h3 class="font-bold mb-2">Effet :</h3>
-                    <p>Associe le voyage à l'expérience et à l'acquisition de la sagesse, soulignant la valeur de l'apprentissage</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="mt-8 p-6 bg-gray-100 rounded-lg">
-        <h3 class="text-xl font-bold text-blue-600 mb-4">Astuces pour mémoriser les champs lexicaux</h3>
-        <p class="mb-4">Pour retenir les principaux champs lexicaux et leurs effets, utilisez l'acronyme <strong>NSCTE-RACS</strong> :</p>
-        <ul class="list-disc pl-6 mb-4">
-            <li><strong>N</strong>ature - pour créer une atmosphère</li>
-            <li><strong>S</strong>entiments - pour exprimer l'émotion du narrateur/poète</li>
-            <li><strong>C</strong>orps - pour incarner physiquement une idée</li>
-            <li><strong>T</strong>emps - pour montrer la fuite ou la permanence</li>
-            <li><strong>E</strong>space - pour situer l'action symboliquement</li>
-            <li><strong>R</strong>eligion - pour évoquer le sacré ou son absence</li>
-            <li><strong>A</strong>rt - pour réfléchir sur la création</li>
-            <li><strong>C</strong>onflit - pour dramatiser une situation</li>
-            <li><strong>S</strong>ocial - pour critiquer la société</li>
-        </ul>
-        <p class="mb-4">Associez chaque champ à une couleur ou un symbole pour une mémorisation visuelle :</p>
-        <ul class="grid grid-cols-1 md:grid-cols-2 gap-2">
-            <li class="flex items-center"><span class="w-4 h-4 bg-green-500 rounded-full mr-2"></span> Nature : vert (arbre)</li>
-            <li class="flex items-center"><span class="w-4 h-4 bg-red-500 rounded-full mr-2"></span> Sentiments : rouge (cœur)</li>
-            <li class="flex items-center"><span class="w-4 h-4 bg-blue-500 rounded-full mr-2"></span> Corps : bleu (silhouette)</li>
-            <li class="flex items-center"><span class="w-4 h-4 bg-gray-500 rounded-full mr-2"></span> Temps : gris (horloge)</li>
-            <li class="flex items-center"><span class="w-4 h-4 bg-orange-500 rounded-full mr-2"></span> Espace : orange (carte)</li>
-            <li class="flex items-center"><span class="w-4 h-4 bg-purple-500 rounded-full mr-2"></span> Religion : violet (croix)</li>
-            <li class="flex items-center"><span class="w-4 h-4 bg-black rounded-full mr-2"></span> Guerre : noir (épée)</li>
-            <li class="flex items-center"><span class="w-4 h-4 bg-indigo-400 rounded-full mr-2"></span> Art : multicolore (palette)</li>
-            <li class="flex items-center"><span class="w-4 h-4 bg-yellow-800 rounded-full mr-2"></span> Social : brun (échelle)</li>
-            <li class="flex items-center"><span class="w-4 h-4 bg-yellow-500 rounded-full mr-2"></span> Connaissance : jaune (livre)</li>
-        </ul>
-    </div>
-
-    <script>
-        function toggleCard(card) {
-            const inner = card.querySelector('div');
-            inner.classList.toggle('rotate-y-180');
-        }
-    </script>
-</div>
-
-        <div id="stylisticsTab" class="tab-content">
-            <h2 class="text-2xl font-bold text-blue-600 mb-6">Les Figures de Style Importantes</h2>
+        <!-- COURANTS LITTÉRAIRES VERSION RESPONSIVE -->
+        <div id="periodsTab" class="tab-content active">
+            <h2 class="text-xl md:text-2xl font-bold text-blue-600 mb-4 md:mb-6">Frise Chronologique des Courants Littéraires</h2>
             
-            <!-- Figures d'analogie -->
-            <div class="mb-8">
-                <h3 class="text-xl font-bold text-purple-600 mb-4">Figures d'analogie</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="bg-white p-6 rounded-lg shadow-md">
-                        <h4 class="font-bold text-blue-600 mb-2">Comparaison</h4>
-                        <p class="text-gray-600 italic mb-2">Rapprochement explicite (utilise "comme", "tel", "semblable à")</p>
+            <div class="relative">
+                <!-- La ligne verticale de la timeline -->
+                <div class="timeline-line"></div>
+                
+                <!-- Version mobile de la frise -->
+                <div class="md:hidden">
+                    <!-- Moyen Âge -->
+                    <div class="mobile-timeline-item mb-6 bg-white p-4 rounded-lg shadow-md">
+                        <h3 class="text-lg font-bold text-blue-600">Moyen Âge (XIe-XVe siècle)</h3>
+                        <p class="text-gray-600 italic mb-2">Littérature courtoise, religieuse, épique</p>
+                        <p class="mb-2"><strong>Auteurs :</strong> Chrétien de Troyes, François Villon</p>
                         <div class="bg-gray-100 p-3 rounded mb-2">
-                            <p class="italic">"Elle est belle comme un soleil" (Hugo)</p>
+                            <p class="italic text-sm">"Frères humains qui après nous vivez, / N'ayez les cœurs contre nous endurcis"</p>
+                            <p class="text-xs text-gray-600">- La Ballade des pendus, Villon</p>
                         </div>
                         <div class="bg-blue-50 p-3 rounded">
-                            <p><strong>Effet :</strong> Établit un rapprochement clair qui facilite la visualisation</p>
+                            <p class="text-sm"><strong>Effet :</strong> Ton méditatif qui suscite la compassion</p>
                         </div>
                     </div>
                     
-                        <div class="bg-white p-6 rounded-lg shadow-md">
-                        <h4 class="font-bold text-blue-600 mb-2">Métaphore</h4>
-                        <p class="text-gray-600 italic mb-2">Comparaison implicite (sans outil de comparaison)</p>
+                    <!-- Renaissance -->
+                    <div class="mobile-timeline-item mb-6 bg-white p-4 rounded-lg shadow-md">
+                        <h3 class="text-lg font-bold text-blue-600">Renaissance (XVIe siècle)</h3>
+                        <p class="text-gray-600 italic mb-2">Humanisme, redécouverte des Anciens</p>
+                        <p class="mb-2"><strong>Auteurs :</strong> Rabelais, Montaigne, Du Bellay</p>
                         <div class="bg-gray-100 p-3 rounded mb-2">
-                            <p class="italic"> "Ma jeunesse ne fut qu'un ténébreux orage" (Baudelaire, <em>L'Ennemi</em>) </p>
+                            <p class="italic text-sm">"Science sans conscience n'est que ruine de l'âme"</p>
+                            <p class="text-xs text-gray-600">- Pantagruel, Rabelais</p>
                         </div>
                         <div class="bg-blue-50 p-3 rounded">
-                            <p><strong>Effet :</strong> Crée une fusion entre deux réalités, enrichissant la représentation et rendant l'abstrait plus concret.</p>
+                            <p class="text-sm"><strong>Effet :</strong> Expression de l'idéal humaniste</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Ajoutez les autres périodes de la même façon pour mobile -->
+                    <!-- Classicisme -->
+                    <div class="mobile-timeline-item mb-6 bg-white p-4 rounded-lg shadow-md">
+                        <h3 class="text-lg font-bold text-blue-600">Classicisme (XVIIe siècle)</h3>
+                        <p class="text-gray-600 italic mb-2">Raison, règle des trois unités</p>
+                        <p class="mb-2"><strong>Auteurs :</strong> Molière, Racine, Corneille</p>
+                        <div class="bg-gray-100 p-3 rounded mb-2">
+                            <p class="italic text-sm">"Je le vis, je rougis, je pâlis à sa vue..."</p>
+                            <p class="text-xs text-gray-600">- Phèdre, Racine</p>
+                        </div>
+                        <div class="bg-blue-50 p-3 rounded">
+                            <p class="text-sm"><strong>Effet :</strong> Évocation du conflit intérieur</p>
                         </div>
                     </div>
 
-                        <div class="bg-white p-6 rounded-lg shadow-md">
-                        <h4 class="font-bold text-blue-600 mb-2">Personnification</h4>
-                        <p class="text-gray-600 italic mb-2">Attribution de caractéristiques humaines à un objet/animal</p>
+                    <!-- Les Lumières -->
+                    <div class="mobile-timeline-item mb-6 bg-white p-4 rounded-lg shadow-md">
+                        <h3 class="text-lg font-bold text-blue-600">Les Lumières (XVIIIe siècle)</h3>
+                        <p class="text-gray-600 italic mb-2">Esprit critique, valorisation de la raison</p>
+                        <p class="mb-2"><strong>Auteurs :</strong> Voltaire, Rousseau, Montesquieu</p>
                         <div class="bg-gray-100 p-3 rounded mb-2">
-                            <p class="italic">"Le vent se querelle avec le chêne" (Hugo)</p>   
+                            <p class="italic text-sm">"Il faut cultiver notre jardin"</p>
+                            <p class="text-xs text-gray-600">- Candide, Voltaire</p>
                         </div>
                         <div class="bg-blue-50 p-3 rounded">
-                            <p><strong>Effet :</strong>  Anime le monde inanimé, créant une présence dramatique et émotionnelle dans le décor.</div>
+                            <p class="text-sm"><strong>Effet :</strong> Conclusion philosophique pratique</p>
+                        </div>
                     </div>
-                      
-                      <div class="bg-white p-6 rounded-lg shadow-md">
-            <h4 class="font-bold text-blue-600 mb-2">Allégorie</h4>
-            <p class="text-gray-600 italic mb-2">Représentation d'une idée abstraite sous forme concrète</p>
-            <div class="bg-gray-100 p-3 rounded mb-2">
-                <p class="italic">"La Mort et le Bûcheron" (La Fontaine)</p>
+                    
+                    <!-- Romantisme -->
+                    <div class="mobile-timeline-item mb-6 bg-white p-4 rounded-lg shadow-md">
+                        <h3 class="text-lg font-bold text-blue-600">Romantisme (début XIXe siècle)</h3>
+                        <p class="text-gray-600 italic mb-2">Exaltation des sentiments, mélancolie</p>
+                        <p class="mb-2"><strong>Auteurs :</strong> Hugo, Lamartine, Musset</p>
+                        <div class="bg-gray-100 p-3 rounded mb-2">
+                            <p class="italic text-sm">"Un seul être vous manque et tout est dépeuplé"</p>
+                            <p class="text-xs text-gray-600">- L'Isolement, Lamartine</p>
+                        </div>
+                        <div class="bg-blue-50 p-3 rounded">
+                            <p class="text-sm"><strong>Effet :</strong> Expression intense de la solitude</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Les autres périodes littéraires en version mobile -->
+                    <div class="mobile-timeline-item mb-6 bg-white p-4 rounded-lg shadow-md">
+                        <h3 class="text-lg font-bold text-blue-600">Réalisme (milieu XIXe siècle)</h3>
+                        <p class="text-gray-600 italic mb-2">Description objective, critique sociale</p>
+                        <p class="mb-2"><strong>Auteurs :</strong> Balzac, Flaubert, Stendhal</p>
+                        <div class="bg-gray-100 p-3 rounded mb-2">
+                            <p class="italic text-sm">"La maison où l'on fabriquait, où l'on vendait l'onguent merveilleux..."</p>
+                            <p class="text-xs text-gray-600">- Balzac</p>
+                        </div>
+                        <div class="bg-blue-50 p-3 rounded">
+                            <p class="text-sm"><strong>Effet :</strong> Création d'un effet de réel</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Et les périodes restantes... -->
+                </div>
+                
+                <!-- Version desktop de la frise (alternance gauche/droite) -->
+                <div class="hidden md:block">
+                    <!-- Moyen Âge -->
+                    <div class="mb-8 flex justify-start">
+                        <div class="w-1/2 bg-white p-6 rounded-lg shadow-md">
+                            <h3 class="text-xl font-bold text-blue-600">Moyen Âge (XIe-XVe siècle)</h3>
+                            <p class="text-gray-600 italic mb-2">Littérature courtoise, religieuse, épique</p>
+                            <p class="mb-2"><strong>Auteurs :</strong> Chrétien de Troyes, François Villon</p>
+                            <div class="bg-gray-100 p-3 rounded mb-2">
+                                <p class="italic">"Frères humains qui après nous vivez, / N'ayez les cœurs contre nous endurcis"</p>
+                                <p class="text-sm text-gray-600">- La Ballade des pendus, Villon</p>
+                            </div>
+                            <div class="bg-blue-50 p-3 rounded">
+                                <p><strong>Effet :</strong> Ton méditatif qui suscite la compassion et rappelle la fragilité de la condition humaine</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Renaissance -->
+                    <div class="mb-8 flex justify-end">
+                        <div class="w-1/2 bg-white p-6 rounded-lg shadow-md">
+                            <h3 class="text-xl font-bold text-blue-600">Renaissance (XVIe siècle)</h3>
+                            <p class="text-gray-600 italic mb-2">Humanisme, redécouverte des Anciens, célébration de l'homme</p>
+                            <p class="mb-2"><strong>Auteurs :</strong> Rabelais, Montaigne, Du Bellay, Ronsard</p>
+                            <div class="bg-gray-100 p-3 rounded mb-2">
+                                <p class="italic">"Science sans conscience n'est que ruine de l'âme"</p>
+                                <p class="text-sm text-gray-600">- Pantagruel, Rabelais</p>
+                            </div>
+                            <div class="bg-blue-50 p-3 rounded">
+                                <p><strong>Effet :</strong> Expression de l'idéal humaniste qui valorise l'équilibre entre savoir et morale</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Classicisme -->
+                    <div class="mb-8 flex justify-start">
+                        <div class="w-1/2 bg-white p-6 rounded-lg shadow-md">
+                            <h3 class="text-xl font-bold text-blue-600">Classicisme (XVIIe siècle)</h3>
+                            <p class="text-gray-600 italic mb-2">Raison, règle des trois unités, bienséance</p>
+                            <p class="mb-2"><strong>Auteurs :</strong> Molière, Racine, Corneille, La Fontaine</p>
+                            <div class="bg-gray-100 p-3 rounded mb-2">
+                                <p class="italic">"Je le vis, je rougis, je pâlis à sa vue ; / Un trouble s'éleva dans mon âme éperdue"</p>
+                                <p class="text-sm text-gray-600">- Phèdre, Racine</p>
+                            </div>
+                            <div class="bg-blue-50 p-3 rounded">
+                                <p><strong>Effet :</strong> Évocation du conflit intérieur par des symptômes physiques</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Continuez avec les autres périodes dans la version desktop -->
+                    <!-- Les Lumières -->
+                    <div class="mb-8 flex justify-end">
+                        <div class="w-1/2 bg-white p-6 rounded-lg shadow-md">
+                            <h3 class="text-xl font-bold text-blue-600">Les Lumières (XVIIIe siècle)</h3>
+                            <p class="text-gray-600 italic mb-2">Esprit critique, combat contre les préjugés, valorisation de la raison</p>
+                            <p class="mb-2"><strong>Auteurs :</strong> Voltaire, Rousseau, Montesquieu, Diderot</p>
+                            <div class="bg-gray-100 p-3 rounded mb-2">
+                                <p class="italic">"Il faut cultiver notre jardin"</p>
+                                <p class="text-sm text-gray-600">- Candide, Voltaire</p>
+                            </div>
+                            <div class="bg-blue-50 p-3 rounded">
+                                <p><strong>Effet :</strong> Conclusion philosophique qui encourage l'action concrète plutôt que les spéculations abstraites</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Romantisme -->
+                    <div class="mb-8 flex justify-start">
+                        <div class="w-1/2 bg-white p-6 rounded-lg shadow-md">
+                            <h3 class="text-xl font-bold text-blue-600">Romantisme (début XIXe siècle)</h3>
+                            <p class="text-gray-600 italic mb-2">Exaltation des sentiments, mélancolie, nature, individualisme</p>
+                            <p class="mb-2"><strong>Auteurs :</strong> Victor Hugo, Lamartine, Musset, Chateaubriand</p>
+                            <div class="bg-gray-100 p-3 rounded mb-2">
+                                <p class="italic">"Un seul être vous manque et tout est dépeuplé"</p>
+                                <p class="text-sm text-gray-600">- L'Isolement, Lamartine</p>
+                            </div>
+                            <div class="bg-blue-50 p-3 rounded">
+                                <p><strong>Effet :</strong> Expression intense du sentiment de solitude et d'abandon</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Et les autres périodes en version desktop... -->
+                </div>
             </div>
-            <div class="bg-blue-50 p-3 rounded">
-                <p><strong>Effet :</strong> Rend accessible un concept abstrait, facilitant sa compréhension par une incarnation visuelle.</p>
+            
+            <!-- Astuces de mémorisation adaptées au mobile -->
+            <div class="bg-gray-50 p-4 md:p-6 rounded-lg mt-6 md:mt-8">
+                <h3 class="text-lg md:text-xl font-bold text-blue-600 mb-3 md:mb-4">Astuces de mémorisation</h3>
+                <p class="mb-3 text-sm md:text-base">Pour retenir la chronologie des courants littéraires, créez un acronyme avec les premières lettres : <strong>MRCLRRNSEN</strong> (Moyen Âge, Renaissance, Classicisme, Lumières, Romantisme, Réalisme...)</p>
+                <p class="mb-3 text-sm md:text-base">Associez chaque mouvement à une image forte :</p>
+                <ul class="list-disc pl-5 md:pl-6 text-sm md:text-base">
+                    <li>Moyen Âge : un château fort</li>
+                    <li>Renaissance : un homme de Vitruve</li>
+                    <li>Classicisme : des colonnes grecques</li>
+                    <li>Lumières : une bougie qui éclaire un livre</li>
+                    <li>Romantisme : un cœur sur fond de tempête</li>
+                    <!-- Autres associations réduites sur mobile -->
+                </ul>
+            </div>
+        </div>
+
+        <!-- CHAMPS LEXICAUX adaptés pour mobile -->
+        <div id="lexicalTab" class="tab-content">
+            <h2 class="text-xl md:text-2xl font-bold text-blue-600 mb-4 md:mb-6">Les Champs Lexicaux Essentiels</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                <!-- Flashcard Nature -->
+                <div class="flashcard perspective-1000 h-56 md:h-64 cursor-pointer" onclick="toggleCard(this)">
+                    <div class="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d">
+                        <div class="absolute w-full h-full bg-blue-600 text-white p-4 md:p-6 rounded-lg flex items-center justify-center text-xl md:text-2xl font-bold">
+                            Nature
+                        </div>
+                        <div class="absolute w-full h-full bg-white p-4 md:p-6 rounded-lg shadow-md backface-hidden rotate-y-180">
+                            <h3 class="font-bold mb-1 md:mb-2 text-sm md:text-base">Termes :</h3>
+                            <p class="mb-1 md:mb-2 text-sm md:text-base">végétation, paysage, météo, saisons, animaux</p>
+                            <h3 class="font-bold mb-1 md:mb-2 text-sm md:text-base">Exemple :</h3>
+                            <p class="italic mb-1 md:mb-2 text-sm md:text-base">Les sanglots longs des violons de l'automne...</p>
+                            <h3 class="font-bold mb-1 md:mb-2 text-sm md:text-base">Effet :</h3>
+                            <p class="text-sm md:text-base">Crée une atmosphère mélancolique associant saison et état d'âme</p>
+                        </div>
+                    </div>
+                </div>
+        
+                <!-- Flashcard Sentiments -->
+                <div class="flashcard perspective-1000 h-56 md:h-64 cursor-pointer" onclick="toggleCard(this)">
+                    <div class="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d">
+                        <div class="absolute w-full h-full bg-red-600 text-white p-4 md:p-6 rounded-lg flex items-center justify-center text-xl md:text-2xl font-bold">
+                            Sentiments
+                        </div>
+                        <div class="absolute w-full h-full bg-white p-4 md:p-6 rounded-lg shadow-md backface-hidden rotate-y-180">
+                            <h3 class="font-bold mb-1 md:mb-2 text-sm md:text-base">Termes :</h3>
+                            <p class="mb-1 md:mb-2 text-sm md:text-base">amour, haine, mélancolie, joie, tristesse, colère</p>
+                            <h3 class="font-bold mb-1 md:mb-2 text-sm md:text-base">Exemple :</h3>
+                            <p class="italic mb-1 md:mb-2 text-sm md:text-base">J'ai plus de souvenirs que si j'avais mille ans...</p>
+                            <h3 class="font-bold mb-1 md:mb-2 text-sm md:text-base">Effet :</h3>
+                            <p class="text-sm md:text-base">Intensifie l'expression du mal-être existentiel et de l'ennui</p>
+                        </div>
+                    </div>
+                </div>
+        
+                <!-- Flashcard Corps -->
+                <div class="flashcard perspective-1000 h-56 md:h-64 cursor-pointer" onclick="toggleCard(this)">
+                    <div class="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d">
+                        <div class="absolute w-full h-full bg-blue-500 text-white p-4 md:p-6 rounded-lg flex items-center justify-center text-xl md:text-2xl font-bold">
+                            Corps
+                        </div>
+                        <div class="absolute w-full h-full bg-white p-4 md:p-6 rounded-lg shadow-md backface-hidden rotate-y-180">
+                            <h3 class="font-bold mb-1 md:mb-2 text-sm md:text-base">Termes :</h3>
+                            <p class="mb-1 md:mb-2 text-sm md:text-base">parties du corps, sensations, mouvements, perceptions</p>
+                            <h3 class="font-bold mb-1 md:mb-2 text-sm md:text-base">Exemple :</h3>
+                            <p class="italic mb-1 md:mb-2 text-sm md:text-base">Ses yeux profonds sont faits de vide et de ténèbres...</p>
+                            <h3 class="font-bold mb-1 md:mb-2 text-sm md:text-base">Effet :</h3>
+                            <p class="text-sm md:text-base">Crée une image macabre confrontant à la réalité de la mort</p>
+                        </div>
+                    </div>
+                </div>
+        
+                <!-- Flashcard Temps -->
+                <div class="flashcard perspective-1000 h-56 md:h-64 cursor-pointer" onclick="toggleCard(this)">
+                    <div class="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d">
+                        <div class="absolute w-full h-full bg-gray-600 text-white p-4 md:p-6 rounded-lg flex items-center justify-center text-xl md:text-2xl font-bold">
+                            Temps
+                        </div>
+                        <div class="absolute w-full h-full bg-white p-4 md:p-6 rounded-lg shadow-md backface-hidden rotate-y-180">
+                            <h3 class="font-bold mb-1 md:mb-2 text-sm md:text-base">Termes :</h3>
+                            <p class="mb-1 md:mb-2 text-sm md:text-base">temporalité, chronologie, époques, durée, instantanéité</p>
+                            <h3 class="font-bold mb-1 md:mb-2 text-sm md:text-base">Exemple :</h3>
+                            <p class="italic mb-1 md:mb-2 text-sm md:text-base">Ô temps, suspends ton vol ! et vous, heures propices...</p>
+                            <h3 class="font-bold mb-1 md:mb-2 text-sm md:text-base">Effet :</h3>
+                            <p class="text-sm md:text-base">Exprime le désir impossible d'arrêter le temps face au bonheur</p>
+                        </div>
+                    </div>
+                </div>
+        
+                <!-- Flashcard Espace -->
+                <div class="flashcard perspective-1000 h-56 md:h-64 cursor-pointer" onclick="toggleCard(this)">
+                    <div class="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d">
+                        <div class="absolute w-full h-full bg-orange-500 text-white p-4 md:p-6 rounded-lg flex items-center justify-center text-xl md:text-2xl font-bold">
+                            Espace
+                        </div>
+                        <div class="absolute w-full h-full bg-white p-4 md:p-6 rounded-lg shadow-md backface-hidden rotate-y-180">
+                            <h3 class="font-bold mb-1 md:mb-2 text-sm md:text-base">Termes :</h3>
+                            <p class="mb-1 md:mb-2 text-sm md:text-base">lieux, déplacement, géographie, orientation</p>
+                            <h3 class="font-bold mb-1 md:mb-2 text-sm md:text-base">Exemple :</h3>
+                            <p class="italic mb-1 md:mb-2 text-sm md:text-base">Paris est un vieillard laborieux qui sue...</p>
+                            <h3 class="font-bold mb-1 md:mb-2 text-sm md:text-base">Effet :</h3>
+                            <p class="text-sm md:text-base">Donne vie à la ville par la personnification</p>
+                        </div>
+                    </div>
+                </div>
+        
+                <!-- Flashcard Religion -->
+                <div class="flashcard perspective-1000 h-56 md:h-64 cursor-pointer" onclick="toggleCard(this)">
+                    <div class="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d">
+                        <div class="absolute w-full h-full bg-purple-600 text-white p-4 md:p-6 rounded-lg flex items-center justify-center text-xl md:text-2xl font-bold">
+                            Religion
+                        </div>
+                        <div class="absolute w-full h-full bg-white p-4 md:p-6 rounded-lg shadow-md backface-hidden rotate-y-180">
+                            <h3 class="font-bold mb-1 md:mb-2 text-sm md:text-base">Termes :</h3>
+                            <p class="mb-1 md:mb-2 text-sm md:text-base">divin, sacré, spiritualité, croyances, rites</p>
+                            <h3 class="font-bold mb-1 md:mb-2 text-sm md:text-base">Exemple :</h3>
+                            <p class="italic mb-1 md:mb-2 text-sm md:text-base">Dieu n'est pas ! Dieu n'est plus !...</p>
+                            <h3 class="font-bold mb-1 md:mb-2 text-sm md:text-base">Effet :</h3>
+                            <p class="text-sm md:text-base">Crée un questionnement spirituel sur l'absence divine</p>
+                        </div>
+                    </div>
+                </div>
+        
+                <!-- Flashcard Guerre/Conflit -->
+                <div class="flashcard perspective-1000 h-56 md:h-64 cursor-pointer" onclick="toggleCard(this)">
+                    <div class="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d">
+                        <div class="absolute w-full h-full bg-black text-white p-4 md:p-6 rounded-lg flex items-center justify-center text-xl md:text-2xl font-bold">
+                            Guerre/Conflit
+                        </div>
+                        <div class="absolute w-full h-full bg-white p-4 md:p-6 rounded-lg shadow-md backface-hidden rotate-y-180">
+                            <h3 class="font-bold mb-1 md:mb-2 text-sm md:text-base">Termes :</h3>
+                            <p class="mb-1 md:mb-2 text-sm md:text-base">combat, violence, armes, stratégie, victoire/défaite</p>
+                            <h3 class="font-bold mb-1 md:mb-2 text-sm md:text-base">Exemple :</h3>
+                            <p class="italic mb-1 md:mb-2 text-sm md:text-base">Et les os des héros blanchissent la plaine</p>
+                            <h3 class="font-bold mb-1 md:mb-2 text-sm md:text-base">Effet :</h3>
+                            <p class="text-sm md:text-base">Évoque les conséquences de la guerre et la vanité militaire</p>
+                        </div>
+                    </div>
+                </div>
+        
+                <!-- Flashcard Art -->
+                <div class="flashcard perspective-1000 h-56 md:h-64 cursor-pointer" onclick="toggleCard(this)">
+                    <div class="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d">
+                        <div class="absolute w-full h-full bg-indigo-400 text-white p-4 md:p-6 rounded-lg flex items-center justify-center text-xl md:text-2xl font-bold">
+                            Art
+                        </div>
+                        <div class="absolute w-full h-full bg-white p-4 md:p-6 rounded-lg shadow-md backface-hidden rotate-y-180">
+                            <h3 class="font-bold mb-1 md:mb-2 text-sm md:text-base">Termes :</h3>
+                            <p class="mb-1 md:mb-2 text-sm md:text-base">création, esthétique, beauté, œuvre, inspiration</p>
+                            <h3 class="font-bold mb-1 md:mb-2 text-sm md:text-base">Exemple :</h3>
+                            <p class="italic mb-1 md:mb-2 text-sm md:text-base">Musicienne du silence</p>
+                            <h3 class="font-bold mb-1 md:mb-2 text-sm md:text-base">Effet :</h3>
+                            <p class="text-sm md:text-base">Traduit par l'oxymore la nature paradoxale de l'art</p>
+                        </div>
+                    </div>
+                </div>
+        
+                <!-- Flashcard Social -->
+                <div class="flashcard perspective-1000 h-56 md:h-64 cursor-pointer" onclick="toggleCard(this)">
+                    <div class="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d">
+                        <div class="absolute w-full h-full bg-yellow-800 text-white p-4 md:p-6 rounded-lg flex items-center justify-center text-xl md:text-2xl font-bold">
+                            Social
+                        </div>
+                        <div class="absolute w-full h-full bg-white p-4 md:p-6 rounded-lg shadow-md backface-hidden rotate-y-180">
+                            <h3 class="font-bold mb-1 md:mb-2 text-sm md:text-base">Termes :</h3>
+                            <p class="mb-1 md:mb-2 text-sm md:text-base">classes, hiérarchie, condition, société, pouvoir</p>
+                            <h3 class="font-bold mb-1 md:mb-2 text-sm md:text-base">Exemple :</h3>
+                            <p class="italic mb-1 md:mb-2 text-sm md:text-base">Pour qui sont ces serpents qui sifflent sur vos têtes ?</p>
+                            <h3 class="font-bold mb-1 md:mb-2 text-sm md:text-base">Effet :</h3>
+                            <p class="text-sm md:text-base">Suggère les intrigues et dangers du pouvoir par métaphore</p>
+                        </div>
+                    </div>
+                </div>
+        
+                <!-- Flashcard Connaissance -->
+                <div class="flashcard perspective-1000 h-56 md:h-64 cursor-pointer" onclick="toggleCard(this)">
+                    <div class="relative w-full h-full transition-transform duration-500 transform-style-preserve-3d">
+                        <div class="absolute w-full h-full bg-yellow-500 text-white p-4 md:p-6 rounded-lg flex items-center justify-center text-xl md:text-2xl font-bold">
+                            Connaissance
+                        </div>
+                        <div class="absolute w-full h-full bg-white p-4 md:p-6 rounded-lg shadow-md backface-hidden rotate-y-180">
+                            <h3 class="font-bold mb-1 md:mb-2 text-sm md:text-base">Termes :</h3>
+                            <p class="mb-1 md:mb-2 text-sm md:text-base">savoir, ignorance, philosophie, science, apprentissage</p>
+                            <h3 class="font-bold mb-1 md:mb-2 text-sm md:text-base">Exemple :</h3>
+                            <p class="italic mb-1 md:mb-2 text-sm md:text-base">Heureux qui, comme Ulysse, a fait un beau voyage...</p>
+                            <h3 class="font-bold mb-1 md:mb-2 text-sm md:text-base">Effet :</h3>
+                            <p class="text-sm md:text-base">Associe le voyage à l'expérience et à l'acquisition de sagesse</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="mt-6 md:mt-8 p-4 md:p-6 bg-gray-100 rounded-lg">
+                <h3 class="text-lg md:text-xl font-bold text-blue-600 mb-3 md:mb-4">Astuces pour mémoriser les champs lexicaux</h3>
+                <p class="mb-3 md:mb-4 text-sm md:text-base">Pour retenir les principaux champs lexicaux et leurs effets, utilisez l'acronyme <strong>NSCTE-RACS</strong> :</p>
+                <ul class="list-disc pl-5 md:pl-6 mb-3 md:mb-4 text-sm md:text-base">
+                    <li><strong>N</strong>ature - pour créer une atmosphère</li>
+                    <li><strong>S</strong>entiments - pour exprimer l'émotion du narrateur/poète</li>
+                    <li><strong>C</strong>orps - pour incarner physiquement une idée</li>
+                    <li><strong>T</strong>emps - pour montrer la fuite ou la permanence</li>
+                    <li><strong>E</strong>space - pour situer l'action symboliquement</li>
+                    <li><strong>R</strong>eligion - pour évoquer le sacré ou son absence</li>
+                    <li><strong>A</strong>rt - pour réfléchir sur la création</li>
+                    <li><strong>C</strong>onflit - pour dramatiser une situation</li>
+                    <li><strong>S</strong>ocial - pour critiquer la société</li>
+                </ul>
+                <p class="mb-3 md:mb-4 text-sm md:text-base">Associez chaque champ à une couleur ou un symbole :</p>
+                <ul class="grid grid-cols-1 md:grid-cols-2 gap-1 md:gap-2 text-sm md:text-base">
+                    <li class="flex items-center"><span class="w-3 h-3 md:w-4 md:h-4 bg-green-500 rounded-full mr-2"></span> Nature : vert (arbre)</li>
+                    <li class="flex items-center"><span class="w-3 h-3 md:w-4 md:h-4 bg-red-500 rounded-full mr-2"></span> Sentiments : rouge (cœur)</li>
+                    <li class="flex items-center"><span class="w-3 h-3 md:w-4 md:h-4 bg-blue-500 rounded-full mr-2"></span> Corps : bleu (silhouette)</li>
+                    <li class="flex items-center"><span class="w-3 h-3 md:w-4 md:h-4 bg-gray-500 rounded-full mr-2"></span> Temps : gris (horloge)</li>
+                    <li class="flex items-center"><span class="w-3 h-3 md:w-4 md:h-4 bg-orange-500 rounded-full mr-2"></span> Espace : orange (carte)</li>
+                    <li class="flex items-center"><span class="w-3 h-3 md:w-4 md:h-4 bg-purple-500 rounded-full mr-2"></span> Religion : violet (croix)</li>
+                    <li class="flex items-center"><span class="w-3 h-3 md:w-4 md:h-4 bg-black rounded-full mr-2"></span> Guerre : noir (épée)</li>
+                    <li class="flex items-center"><span class="w-3 h-3 md:w-4 md:h-4 bg-indigo-400 rounded-full mr-2"></span> Art : multicolore (palette)</li>
+                    <li class="flex items-center"><span class="w-3 h-3 md:w-4 md:h-4 bg-yellow-800 rounded-full mr-2"></span> Social : brun (échelle)</li>
+                    <li class="flex items-center"><span class="w-3 h-3 md:w-4 md:h-4 bg-yellow-500 rounded-full mr-2"></span> Connaissance : jaune (livre)</li>
+                </ul>
+            </div>
+
+            <script>
+                function toggleCard(card) {
+                    const inner = card.querySelector('div');
+                    inner.classList.toggle('rotate-y-180');
+                }
+    </script>
+            
+</div>
+
+<div id="stylisticsTab" class="tab-content">
+    <h2 class="text-2xl font-bold text-blue-600 mb-6">Les Figures de Style Importantes</h2>
+    
+    <!-- Figures d'analogie -->
+    <div class="mb-8">
+        <h3 class="text-xl font-bold text-purple-600 mb-4">Figures d'analogie</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h4 class="font-bold text-blue-600 mb-2">Comparaison</h4>
+                <p class="text-gray-600 italic mb-2">Rapprochement explicite (utilise "comme", "tel", "semblable à")</p>
+                <div class="bg-gray-100 p-3 rounded mb-2">
+                    <p class="italic">"Elle est belle comme un soleil" (Hugo)</p>
+                </div>
+                <div class="bg-blue-50 p-3 rounded">
+                    <p><strong>Effet :</strong> Établit un rapprochement clair qui facilite la visualisation</p>
+                </div>
+            </div>
+            
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                <h4 class="font-bold text-blue-600 mb-2">Métaphore</h4>
+                <p class="text-gray-600 italic mb-2">Comparaison implicite (sans outil de comparaison)</p>
+                <div class="bg-gray-100 p-3 rounded mb-2">
+                    <p class="italic"> "Ma jeunesse ne fut qu'un ténébreux orage" (Baudelaire, <em>L'Ennemi</em>) </p>
+                </div>
+                <div class="bg-blue-50 p-3 rounded">
+                    <p><strong>Effet :</strong> Crée une fusion entre deux réalités, enrichissant la représentation et rendant l'abstrait plus concret.</p>
+                </div>
+            </div>
+
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                <h4 class="font-bold text-blue-600 mb-2">Personnification</h4>
+                <p class="text-gray-600 italic mb-2">Attribution de caractéristiques humaines à un objet/animal</p>
+                <div class="bg-gray-100 p-3 rounded mb-2">
+                    <p class="italic">"Le vent se querelle avec le chêne" (Hugo)</p>   
+                </div>
+                <div class="bg-blue-50 p-3 rounded">
+                    <p><strong>Effet :</strong>  Anime le monde inanimé, créant une présence dramatique et émotionnelle dans le décor.</div>
+            </div>
+              
+              <div class="bg-white p-6 rounded-lg shadow-md">
+    <h4 class="font-bold text-blue-600 mb-2">Allégorie</h4>
+    <p class="text-gray-600 italic mb-2">Représentation d'une idée abstraite sous forme concrète</p>
+    <div class="bg-gray-100 p-3 rounded mb-2">
+        <p class="italic">"La Mort et le Bûcheron" (La Fontaine)</p>
+    </div>
+    <div class="bg-blue-50 p-3 rounded">
+        <p><strong>Effet :</strong> Rend accessible un concept abstrait, facilitant sa compréhension par une incarnation visuelle.</p>
+    </div>
+</div>
+</div>
+</div>
+    <!--Figures d'insistance-->
+    <div class="mb-8">
+        <h3 class="text-xl font-bold text-purple-600 mb-4">Figures d'insistance</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h4 class="font-bold text-blue-600 mb-2">Répétition</h4>
+                <p class="text-gray-600 italic mb-2">Reprise d'un même mot ou groupe de mots</p>
+                <div class="bg-gray-100 p-3 rounded mb-2">
+                    <p class="italic">"Rome, l'unique objet de mon ressentiment ! / Rome, à qui vient ton bras d'immoler mon amant !" (Corneille, <em>Horace</em>)</p>
+                </div>
+                <div class="bg-blue-50 p-3 rounded">
+                    <p><strong>Effet :</strong> Martèle une idée, amplifie l'émotion et structure le discours autour d'un élément central.</p>
+                </div>
+            </div>
+            
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h4 class="font-bold text-blue-600 mb-2">Anaphore</h4>
+                <p class="text-gray-600 italic mb-2">Répétition en début de phrases ou de vers</p>
+                <div class="bg-gray-100 p-3 rounded mb-2">
+                    <p class="italic">"J'ai vu des déserts, j'ai vu des vallées riantes, j'ai vu des villes sans mémoire" (Chateaubriand)</p>
+                </div>
+                <div class="bg-blue-50 p-3 rounded">
+                    <p><strong>Effet :</strong> Crée un rythme incantatoire, accentue l'accumulation d'expériences et donne une force oratoire.</p>
+                </div>
+            </div>
+            
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h4 class="font-bold text-blue-600 mb-2">Gradation</h4>
+                <p class="text-gray-600 italic mb-2">Progression croissante ou décroissante</p>
+                <div class="bg-gray-100 p-3 rounded mb-2">
+                    <p class="italic">"Va, cours, vole et nous venge" (Corneille, <em>Le Cid</em>)</p>
+                </div>
+                <div class="bg-blue-50 p-3 rounded">
+                    <p><strong>Effet :</strong> Accélère le rythme, traduit une intensité croissante et donne une impression de mouvement.</p>
+                </div>
+            </div>
+            
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h4 class="font-bold text-blue-600 mb-2">Énumération</h4>
+                <p class="text-gray-600 italic mb-2">Succession de termes</p>
+                <div class="bg-gray-100 p-3 rounded mb-2">
+                    <p class="italic">"Des perles, des diamants, des rubis" (Molière, <em>L'Avare</em>)</p>
+                </div>
+                <div class="bg-blue-50 p-3 rounded">
+                    <p><strong>Effet :</strong> Crée un effet d'accumulation qui peut traduire l'abondance, la variété ou l'obsession.</p>
+                </div>
             </div>
         </div>
     </div>
+    <!--Figures d'oposition-->
+    <div class="mb-8">
+        <h3 class="text-xl font-bold text-purple-600 mb-4">Figures d'opposition</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h4 class="font-bold text-blue-600 mb-2">Antithèse</h4>
+                <p class="text-gray-600 italic mb-2">Opposition de deux idées, mots, images</p>
+                <div class="bg-gray-100 p-3 rounded mb-2">
+                    <p class="italic">"Je vis, je meurs ; je me brûle et me noie" (Louise Labé)</p>
+                </div>
+                <div class="bg-blue-50 p-3 rounded">
+                    <p><strong>Effet :</strong> Traduit un déchirement intérieur, un conflit d'émotions contradictoires.</p>
+                </div>
+            </div>
+            
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h4 class="font-bold text-blue-600 mb-2">Oxymore</h4>
+                <p class="text-gray-600 italic mb-2">Alliance de termes contradictoires</p>
+                <div class="bg-gray-100 p-3 rounded mb-2">
+                    <p class="italic">"Cette obscure clarté qui tombe des étoiles" (Corneille, <em>Le Cid</em>)</p>
+                </div>
+                <div class="bg-blue-50 p-3 rounded">
+                    <p><strong>Effet :</strong> Crée une tension sémantique qui surprend le lecteur et exprime une réalité complexe.</p>
+                </div>
+            </div>
+            
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h4 class="font-bold text-blue-600 mb-2">Chiasme</h4>
+                <p class="text-gray-600 italic mb-2">Croisement syntaxique (structure ABBA)</p>
+                <div class="bg-gray-100 p-3 rounded mb-2">
+                    <p class="italic">"Il faut manger pour vivre et non pas vivre pour manger" (Molière, <em>L'Avare</em>)</p>
+                </div>
+                <div class="bg-blue-50 p-3 rounded">
+                    <p><strong>Effet :</strong> Met en évidence une opposition par la symétrie inversée, rendant la formule mémorable.</p>
+                </div>
+            </div>
+            
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h4 class="font-bold text-blue-600 mb-2">Paradoxe</h4>
+                <p class="text-gray-600 italic mb-2">Formulation contraire à la logique commune</p>
+                <div class="bg-gray-100 p-3 rounded mb-2">
+                    <p class="italic">"Plus je connais les hommes, plus j'aime mon chien"</p>
+                </div>
+                <div class="bg-blue-50 p-3 rounded">
+                    <p><strong>Effet :</strong> Provoque la réflexion par l'apparente contradiction, invitant à découvrir une vérité profonde.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Figures de substitution-->
+    <div class="mb-8">
+        <h3 class="text-xl font-bold text-purple-600 mb-4">Figures de substitution</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h4 class="font-bold text-blue-600 mb-2">Métonymie</h4>
+                <p class="text-gray-600 italic mb-2">Désignation par une relation logique (contenant/contenu)</p>
+                <div class="bg-gray-100 p-3 rounded mb-2">
+                    <p class="italic">"Boire un verre" (le contenu pour le contenant)</p>
+                </div>
+                <div class="bg-blue-50 p-3 rounded">
+                    <p><strong>Effet :</strong> Crée un raccourci expressif qui établit une association immédiate et naturelle.</p>
+                </div>
+            </div>
+            
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h4 class="font-bold text-blue-600 mb-2">Synecdoque</h4>
+                <p class="text-gray-600 italic mb-2">Partie pour le tout ou tout pour la partie</p>
+                <div class="bg-gray-100 p-3 rounded mb-2">
+                    <p class="italic">"Toutes les voiles sont à l'horizon" (les voiles pour les bateaux)</p>
+                </div>
+                <div class="bg-blue-50 p-3 rounded">
+                    <p><strong>Effet :</strong> Focalise l'attention sur un élément caractéristique, produisant une image plus vivante.</p>
+                </div>
+            </div>
+            
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h4 class="font-bold text-blue-600 mb-2">Périphrase</h4>
+                <p class="text-gray-600 italic mb-2">Expression détournée pour désigner une réalité</p>
+                <div class="bg-gray-100 p-3 rounded mb-2">
+                    <p class="italic">"L'astre du jour" (pour désigner le soleil)</p>
+                </div>
+                <div class="bg-blue-50 p-3 rounded">
+                    <p><strong>Effet :</strong> Embellit le style, évite la répétition ou euphémise une réalité trop brutale.</p>
+                </div>
+            </div>
+            
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h4 class="font-bold text-blue-600 mb-2">Euphémisme</h4>
+                <p class="text-gray-600 italic mb-2">Atténuation d'une réalité déplaisante</p>
+                <div class="bg-gray-100 p-3 rounded mb-2">
+                    <p class="italic">"Il nous a quittés" (pour dire qu'il est mort)</p>
+                </div>
+                <div class="bg-blue-50 p-3 rounded">
+                    <p><strong>Effet :</strong> Adoucit une réalité douloureuse, témoigne d'une pudeur face à certains sujets sensibles.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="mb-8 bg-yellow-50 p-6 rounded-lg border border-yellow-200">
+        <h3 class="text-xl font-bold text-yellow-700 mb-4">Astuces pour mémoriser les figures de style</h3>
+        <p class="mb-4">Utilisez le groupement par catégories et cette astuce mnémotechnique :</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div class="bg-white p-4 rounded-lg shadow-sm">
+                <p><strong class="text-purple-600">Analogie</strong>: "Comparaison, Métaphore, Personnification, Allégorie" → <em>CoMPArez ces figures</em></p>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow-sm">
+                <p><strong class="text-purple-600">Insistance</strong>: "Répétition, Anaphore, Gradation, Énumération" → <em>RAGE de répéter</em></p>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow-sm">
+                <p><strong class="text-purple-600">Opposition</strong>: "Antithèse, Oxymore, Chiasme, Paradoxe" → <em>AOCP (À l'Ouest, Ça Pousse)</em></p>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow-sm">
+                <p><strong class="text-purple-600">Substitution</strong>: "Métonymie, Synecdoque, Périphrase, Euphémisme" → <em>MaSPE (Ma SPEcialité)</em></p>
+            </div>
+        </div>
+        
+        <p class="font-semibold mb-2">Pour chaque figure, associez :</p>
+        <ol class="list-decimal pl-6 space-y-2">
+            <li>Un exemple court et frappant</li>
+            <li>Un effet principal</li>
+            <li>Un geste ou une image mentale</li>
+        </ol>
+    </div>
 </div>
-            <!--Figures d'insistance-->
-            <div class="mb-8">
-                <h3 class="text-xl font-bold text-purple-600 mb-4">Figures d'insistance</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="bg-white p-6 rounded-lg shadow-md">
-                        <h4 class="font-bold text-blue-600 mb-2">Répétition</h4>
-                        <p class="text-gray-600 italic mb-2">Reprise d'un même mot ou groupe de mots</p>
-                        <div class="bg-gray-100 p-3 rounded mb-2">
-                            <p class="italic">"Rome, l'unique objet de mon ressentiment ! / Rome, à qui vient ton bras d'immoler mon amant !" (Corneille, <em>Horace</em>)</p>
-                        </div>
-                        <div class="bg-blue-50 p-3 rounded">
-                            <p><strong>Effet :</strong> Martèle une idée, amplifie l'émotion et structure le discours autour d'un élément central.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-white p-6 rounded-lg shadow-md">
-                        <h4 class="font-bold text-blue-600 mb-2">Anaphore</h4>
-                        <p class="text-gray-600 italic mb-2">Répétition en début de phrases ou de vers</p>
-                        <div class="bg-gray-100 p-3 rounded mb-2">
-                            <p class="italic">"J'ai vu des déserts, j'ai vu des vallées riantes, j'ai vu des villes sans mémoire" (Chateaubriand)</p>
-                        </div>
-                        <div class="bg-blue-50 p-3 rounded">
-                            <p><strong>Effet :</strong> Crée un rythme incantatoire, accentue l'accumulation d'expériences et donne une force oratoire.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-white p-6 rounded-lg shadow-md">
-                        <h4 class="font-bold text-blue-600 mb-2">Gradation</h4>
-                        <p class="text-gray-600 italic mb-2">Progression croissante ou décroissante</p>
-                        <div class="bg-gray-100 p-3 rounded mb-2">
-                            <p class="italic">"Va, cours, vole et nous venge" (Corneille, <em>Le Cid</em>)</p>
-                        </div>
-                        <div class="bg-blue-50 p-3 rounded">
-                            <p><strong>Effet :</strong> Accélère le rythme, traduit une intensité croissante et donne une impression de mouvement.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-white p-6 rounded-lg shadow-md">
-                        <h4 class="font-bold text-blue-600 mb-2">Énumération</h4>
-                        <p class="text-gray-600 italic mb-2">Succession de termes</p>
-                        <div class="bg-gray-100 p-3 rounded mb-2">
-                            <p class="italic">"Des perles, des diamants, des rubis" (Molière, <em>L'Avare</em>)</p>
-                        </div>
-                        <div class="bg-blue-50 p-3 rounded">
-                            <p><strong>Effet :</strong> Crée un effet d'accumulation qui peut traduire l'abondance, la variété ou l'obsession.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!--Figures d'oposition-->
-            <div class="mb-8">
-                <h3 class="text-xl font-bold text-purple-600 mb-4">Figures d'opposition</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="bg-white p-6 rounded-lg shadow-md">
-                        <h4 class="font-bold text-blue-600 mb-2">Antithèse</h4>
-                        <p class="text-gray-600 italic mb-2">Opposition de deux idées, mots, images</p>
-                        <div class="bg-gray-100 p-3 rounded mb-2">
-                            <p class="italic">"Je vis, je meurs ; je me brûle et me noie" (Louise Labé)</p>
-                        </div>
-                        <div class="bg-blue-50 p-3 rounded">
-                            <p><strong>Effet :</strong> Traduit un déchirement intérieur, un conflit d'émotions contradictoires.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-white p-6 rounded-lg shadow-md">
-                        <h4 class="font-bold text-blue-600 mb-2">Oxymore</h4>
-                        <p class="text-gray-600 italic mb-2">Alliance de termes contradictoires</p>
-                        <div class="bg-gray-100 p-3 rounded mb-2">
-                            <p class="italic">"Cette obscure clarté qui tombe des étoiles" (Corneille, <em>Le Cid</em>)</p>
-                        </div>
-                        <div class="bg-blue-50 p-3 rounded">
-                            <p><strong>Effet :</strong> Crée une tension sémantique qui surprend le lecteur et exprime une réalité complexe.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-white p-6 rounded-lg shadow-md">
-                        <h4 class="font-bold text-blue-600 mb-2">Chiasme</h4>
-                        <p class="text-gray-600 italic mb-2">Croisement syntaxique (structure ABBA)</p>
-                        <div class="bg-gray-100 p-3 rounded mb-2">
-                            <p class="italic">"Il faut manger pour vivre et non pas vivre pour manger" (Molière, <em>L'Avare</em>)</p>
-                        </div>
-                        <div class="bg-blue-50 p-3 rounded">
-                            <p><strong>Effet :</strong> Met en évidence une opposition par la symétrie inversée, rendant la formule mémorable.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-white p-6 rounded-lg shadow-md">
-                        <h4 class="font-bold text-blue-600 mb-2">Paradoxe</h4>
-                        <p class="text-gray-600 italic mb-2">Formulation contraire à la logique commune</p>
-                        <div class="bg-gray-100 p-3 rounded mb-2">
-                            <p class="italic">"Plus je connais les hommes, plus j'aime mon chien"</p>
-                        </div>
-                        <div class="bg-blue-50 p-3 rounded">
-                            <p><strong>Effet :</strong> Provoque la réflexion par l'apparente contradiction, invitant à découvrir une vérité profonde.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!--Figures de substitution-->
-            <div class="mb-8">
-                <h3 class="text-xl font-bold text-purple-600 mb-4">Figures de substitution</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="bg-white p-6 rounded-lg shadow-md">
-                        <h4 class="font-bold text-blue-600 mb-2">Métonymie</h4>
-                        <p class="text-gray-600 italic mb-2">Désignation par une relation logique (contenant/contenu)</p>
-                        <div class="bg-gray-100 p-3 rounded mb-2">
-                            <p class="italic">"Boire un verre" (le contenu pour le contenant)</p>
-                        </div>
-                        <div class="bg-blue-50 p-3 rounded">
-                            <p><strong>Effet :</strong> Crée un raccourci expressif qui établit une association immédiate et naturelle.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-white p-6 rounded-lg shadow-md">
-                        <h4 class="font-bold text-blue-600 mb-2">Synecdoque</h4>
-                        <p class="text-gray-600 italic mb-2">Partie pour le tout ou tout pour la partie</p>
-                        <div class="bg-gray-100 p-3 rounded mb-2">
-                            <p class="italic">"Toutes les voiles sont à l'horizon" (les voiles pour les bateaux)</p>
-                        </div>
-                        <div class="bg-blue-50 p-3 rounded">
-                            <p><strong>Effet :</strong> Focalise l'attention sur un élément caractéristique, produisant une image plus vivante.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-white p-6 rounded-lg shadow-md">
-                        <h4 class="font-bold text-blue-600 mb-2">Périphrase</h4>
-                        <p class="text-gray-600 italic mb-2">Expression détournée pour désigner une réalité</p>
-                        <div class="bg-gray-100 p-3 rounded mb-2">
-                            <p class="italic">"L'astre du jour" (pour désigner le soleil)</p>
-                        </div>
-                        <div class="bg-blue-50 p-3 rounded">
-                            <p><strong>Effet :</strong> Embellit le style, évite la répétition ou euphémise une réalité trop brutale.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-white p-6 rounded-lg shadow-md">
-                        <h4 class="font-bold text-blue-600 mb-2">Euphémisme</h4>
-                        <p class="text-gray-600 italic mb-2">Atténuation d'une réalité déplaisante</p>
-                        <div class="bg-gray-100 p-3 rounded mb-2">
-                            <p class="italic">"Il nous a quittés" (pour dire qu'il est mort)</p>
-                        </div>
-                        <div class="bg-blue-50 p-3 rounded">
-                            <p><strong>Effet :</strong> Adoucit une réalité douloureuse, témoigne d'une pudeur face à certains sujets sensibles.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="mb-8 bg-yellow-50 p-6 rounded-lg border border-yellow-200">
-                <h3 class="text-xl font-bold text-yellow-700 mb-4">Astuces pour mémoriser les figures de style</h3>
-                <p class="mb-4">Utilisez le groupement par catégories et cette astuce mnémotechnique :</p>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                    <div class="bg-white p-4 rounded-lg shadow-sm">
-                        <p><strong class="text-purple-600">Analogie</strong>: "Comparaison, Métaphore, Personnification, Allégorie" → <em>CoMPArez ces figures</em></p>
-                    </div>
-                    <div class="bg-white p-4 rounded-lg shadow-sm">
-                        <p><strong class="text-purple-600">Insistance</strong>: "Répétition, Anaphore, Gradation, Énumération" → <em>RAGE de répéter</em></p>
-                    </div>
-                    <div class="bg-white p-4 rounded-lg shadow-sm">
-                        <p><strong class="text-purple-600">Opposition</strong>: "Antithèse, Oxymore, Chiasme, Paradoxe" → <em>AOCP (À l'Ouest, Ça Pousse)</em></p>
-                    </div>
-                    <div class="bg-white p-4 rounded-lg shadow-sm">
-                        <p><strong class="text-purple-600">Substitution</strong>: "Métonymie, Synecdoque, Périphrase, Euphémisme" → <em>MaSPE (Ma SPEcialité)</em></p>
-                    </div>
-                </div>
-                
-                <p class="font-semibold mb-2">Pour chaque figure, associez :</p>
-                <ol class="list-decimal pl-6 space-y-2">
-                    <li>Un exemple court et frappant</li>
-                    <li>Un effet principal</li>
-                    <li>Un geste ou une image mentale</li>
+
+<div id="techniquesTab" class="tab-content">
+    <div class="mb-8">
+        <h3 class="text-xl font-bold text-purple-600 mb-4">Comment Analyser les Effets dans un Commentaire de Texte</h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <!-- Méthode d'analyse en 5 étapes -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h4 class="font-bold text-blue-600 mb-2">Méthode d'analyse en 5 étapes</h4>
+                <ol class="list-decimal pl-5 space-y-2">
+                    <li><strong>Identifier</strong> le procédé littéraire ou stylistique</li>
+                    <li><strong>Citer</strong> précisément le passage concerné</li>
+                    <li><strong>Nommer</strong> correctement le procédé (figure de style, champ lexical, etc.)</li>
+                    <li><strong>Analyser</strong> l'effet produit sur le lecteur</li>
+                    <li><strong>Relier</strong> cet effet à l'intention globale de l'auteur et au sens du texte</li>
                 </ol>
             </div>
+            
+            <!-- Analyse des effets : éléments à considérer -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h4 class="font-bold text-blue-600 mb-2">Analyse des effets : éléments à considérer</h4>
+                <ul class="list-disc pl-5 space-y-2">
+                    <li>La tonalité créée (pathétique, lyrique, comique, etc.)</li>
+                    <li>L'émotion suscitée chez le lecteur</li>
+                    <li>L'image mentale évoquée</li>
+                    <li>La fonction argumentative ou persuasive</li>
+                    <li>Le rythme ou la musicalité</li>
+                </ul>
+            </div>
         </div>
+        
+        <!-- Exemple d'analyse complète -->
+        <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+            <h4 class="font-bold text-blue-600 mb-3">Exemple d'analyse complète</h4>
+            <p class="mb-2"><strong>Extrait</strong> (Lamartine, <em>Le Lac</em>) :</p>
+            <div class="bg-gray-100 p-3 rounded mb-4">
+                <p class="italic">
+                    "Ô temps, suspends ton vol ! et vous, heures propices,<br>
+                    Suspendez votre cours !<br>
+                    Laissez-nous savourer les rapides délices<br>
+                    Des plus beaux de nos jours !"
+                </p>
+            </div>
+            
+            <p class="mb-2"><strong>Analyse des effets</strong> :</p>
+            <ul class="list-disc pl-5 space-y-2">
+                <li><strong>Apostrophe</strong> (<em>"Ô temps"</em>) : Cette interpellation personnifiée du temps crée un effet pathétique, comme si le poète tentait désespérément de communiquer avec une force implacable. L'effet est dramatique et intensifie l'émotion.</li>
+                <li><strong>Impératifs répétés</strong> (<em>"suspends"</em>, <em>"suspendez"</em>, <em>"laissez"</em>) : L'accumulation de ces ordres traduit l'urgence et l'intensité du désir du poète. Ces injonctions impossibles à réaliser soulignent tragiquement l'impuissance humaine face au temps.</li>
+                <li><strong>Champ lexical du temps</strong> (<em>"temps"</em>, <em>"heures"</em>, <em>"cours"</em>, <em>"rapides"</em>, <em>"jours"</em>) : La récurrence de ces termes crée une obsession temporelle qui renforce l'angoisse du poète face à la fuite inexorable des instants heureux.</li>
+                <li><strong>Antithèse</strong> entre <em>"rapides délices"</em> et le désir de suspension : Cette opposition met en lumière le paradoxe fondamental de l'existence humaine : plus les moments sont plaisants, plus ils semblent fugaces. L'effet est de susciter chez le lecteur une réflexion existentielle.</li>
+                <li><strong>Effet global</strong> : Ces procédés convergent pour exprimer le thème romantique par excellence - la confrontation douloureuse entre l'aspiration à l'éternité que procure l'amour et la conscience aiguë de la fuite du temps. L'émotion suscitée est à la fois mélancolique et universelle, invitant le lecteur à méditer sur sa propre expérience de la temporalité.</li>
+            </ul>
+        </div>
+        
+        <!-- Formulations utiles pour l'analyse -->
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h4 class="font-bold text-blue-600 mb-3">Formulations utiles pour l'analyse</h4>
+            <div class="overflow-x-auto">
+                <table class="min-w-full border-collapse">
+                    <thead>
+                        <tr class="bg-blue-50">
+                            <th class="border border-gray-300 px-4 py-2 text-left">Pour introduire l'effet</th>
+                            <th class="border border-gray-300 px-4 py-2 text-left">Pour développer l'analyse</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="border border-gray-300 px-4 py-2">"Ce procédé permet de..."</td>
+                            <td class="border border-gray-300 px-4 py-2">"Cette figure renforce l'idée que..." / "L'auteur cherche ainsi à provoquer..."</td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                            <td class="border border-gray-300 px-4 py-2">"L'effet produit est..."</td>
+                            <td class="border border-gray-300 px-4 py-2">"Cette technique favorise l'identification du lecteur..." / "Le texte gagne en intensité..."</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+    <!-- Procédés Littéraires Tab Content -->
+<div id="procedesTab" class="tab-content">
+    <h2 class="text-xl md:text-2xl font-bold text-blue-600 mb-4 md:mb-6">Les Procédés Littéraires et la Technique LGSG</h2>
+    
+    <div class="mb-4 md:mb-6">
+        <h3 class="text-xl font-bold text-purple-600 mb-4">Introduction aux Procédés Littéraires</h3>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h4 class="font-bold text-blue-600 mb-2">Définition et Utilité</h4>
+            <p class="text-gray-600 italic mb-2">Outils utilisés par un auteur pour enrichir son texte, captiver le lecteur et provoquer des effets</p>
+            <div class="bg-gray-100 p-3 rounded mb-2">
+                <ul class="list-disc pl-5">
+                    <li>Démontrent votre expertise technique</li>
+                    <li>Permettent d'éviter la paraphrase</li>
+                    <li>Apportent une valeur ajoutée à l'analyse</li>
+                </ul>
+            </div>
+            <div class="bg-blue-50 p-3 rounded">
+                <p><strong>Effet :</strong> Guident dans l'élaboration d'un plan et structurent l'analyse</p>
+            </div>
+        </div>
+    </div>
 
-        <div id="techniquesTab" class="tab-content">
-            <div class="mb-8">
-                <h3 class="text-xl font-bold text-purple-600 mb-4">Comment Analyser les Effets dans un Commentaire de Texte</h3>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                    <!-- Méthode d'analyse en 5 étapes -->
-                    <div class="bg-white p-6 rounded-lg shadow-md">
-                        <h4 class="font-bold text-blue-600 mb-2">Méthode d'analyse en 5 étapes</h4>
-                        <ol class="list-decimal pl-5 space-y-2">
-                            <li><strong>Identifier</strong> le procédé littéraire ou stylistique</li>
-                            <li><strong>Citer</strong> précisément le passage concerné</li>
-                            <li><strong>Nommer</strong> correctement le procédé (figure de style, champ lexical, etc.)</li>
-                            <li><strong>Analyser</strong> l'effet produit sur le lecteur</li>
-                            <li><strong>Relier</strong> cet effet à l'intention globale de l'auteur et au sens du texte</li>
-                        </ol>
-                    </div>
-                    
-                    <!-- Analyse des effets : éléments à considérer -->
-                    <div class="bg-white p-6 rounded-lg shadow-md">
-                        <h4 class="font-bold text-blue-600 mb-2">Analyse des effets : éléments à considérer</h4>
-                        <ul class="list-disc pl-5 space-y-2">
-                            <li>La tonalité créée (pathétique, lyrique, comique, etc.)</li>
-                            <li>L'émotion suscitée chez le lecteur</li>
-                            <li>L'image mentale évoquée</li>
-                            <li>La fonction argumentative ou persuasive</li>
-                            <li>Le rythme ou la musicalité</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <!-- Exemple d'analyse complète -->
-                <div class="bg-white p-6 rounded-lg shadow-md mb-6">
-                    <h4 class="font-bold text-blue-600 mb-3">Exemple d'analyse complète</h4>
-                    <p class="mb-2"><strong>Extrait</strong> (Lamartine, <em>Le Lac</em>) :</p>
-                    <div class="bg-gray-100 p-3 rounded mb-4">
-                        <p class="italic">
-                            "Ô temps, suspends ton vol ! et vous, heures propices,<br>
-                            Suspendez votre cours !<br>
-                            Laissez-nous savourer les rapides délices<br>
-                            Des plus beaux de nos jours !"
-                        </p>
-                    </div>
-                    
-                    <p class="mb-2"><strong>Analyse des effets</strong> :</p>
-                    <ul class="list-disc pl-5 space-y-2">
-                        <li><strong>Apostrophe</strong> (<em>"Ô temps"</em>) : Cette interpellation personnifiée du temps crée un effet pathétique, comme si le poète tentait désespérément de communiquer avec une force implacable. L'effet est dramatique et intensifie l'émotion.</li>
-                        <li><strong>Impératifs répétés</strong> (<em>"suspends"</em>, <em>"suspendez"</em>, <em>"laissez"</em>) : L'accumulation de ces ordres traduit l'urgence et l'intensité du désir du poète. Ces injonctions impossibles à réaliser soulignent tragiquement l'impuissance humaine face au temps.</li>
-                        <li><strong>Champ lexical du temps</strong> (<em>"temps"</em>, <em>"heures"</em>, <em>"cours"</em>, <em>"rapides"</em>, <em>"jours"</em>) : La récurrence de ces termes crée une obsession temporelle qui renforce l'angoisse du poète face à la fuite inexorable des instants heureux.</li>
-                        <li><strong>Antithèse</strong> entre <em>"rapides délices"</em> et le désir de suspension : Cette opposition met en lumière le paradoxe fondamental de l'existence humaine : plus les moments sont plaisants, plus ils semblent fugaces. L'effet est de susciter chez le lecteur une réflexion existentielle.</li>
-                        <li><strong>Effet global</strong> : Ces procédés convergent pour exprimer le thème romantique par excellence - la confrontation douloureuse entre l'aspiration à l'éternité que procure l'amour et la conscience aiguë de la fuite du temps. L'émotion suscitée est à la fois mélancolique et universelle, invitant le lecteur à méditer sur sa propre expérience de la temporalité.</li>
+    <div class="mb-8">
+        <h3 class="text-xl font-bold text-purple-600 mb-4">La technique LGSG</h3>
+        <p class="mb-4">Méthode d'analyse progressive des procédés littéraires en quatre catégories</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h4 class="font-bold text-blue-600 mb-2">L - Procédés Lexicaux</h4>
+                <p class="text-gray-600 italic mb-2">Liés au vocabulaire et au choix des mots</p>
+                <div class="bg-gray-100 p-3 rounded mb-2">
+                    <ul class="list-disc pl-5">
+                        <li>Champs lexicaux (minimum trois mots)</li>
+                        <li>Vocabulaire mélioratif ou péjoratif</li>
+                        <li>Synonymes et antonymes</li>
                     </ul>
                 </div>
-                
-                <!-- Formulations utiles pour l'analyse -->
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h4 class="font-bold text-blue-600 mb-3">Formulations utiles pour l'analyse</h4>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full border-collapse">
-                            <thead>
-                                <tr class="bg-blue-50">
-                                    <th class="border border-gray-300 px-4 py-2 text-left">Pour introduire l'effet</th>
-                                    <th class="border border-gray-300 px-4 py-2 text-left">Pour développer l'analyse</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="border border-gray-300 px-4 py-2">"Ce procédé permet de..."</td>
-                                    <td class="border border-gray-300 px-4 py-2">"Cette figure renforce l'idée que..." / "L'auteur cherche ainsi à provoquer..."</td>
-                                </tr>
-                                <tr class="bg-gray-50">
-                                    <td class="border border-gray-300 px-4 py-2">"L'effet produit est..."</td>
-                                    <td class="border border-gray-300 px-4 py-2">"Cette technique favorise l'identification du lecteur..." / "Le texte gagne en intensité..."</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="bg-blue-50 p-3 rounded">
+                    <p><strong>Exemple :</strong> "Champ lexical de la souffrance : <em>affligé</em>, <em>malheureux</em>, <em>souffrez</em>"</p>
+                </div>
+            </div>
+            
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h4 class="font-bold text-blue-600 mb-2">G - Procédés Grammaticaux</h4>
+                <p class="text-gray-600 italic mb-2">Portent sur la phrase, les verbes, les temps et modes verbaux</p>
+                <div class="bg-gray-100 p-3 rounded mb-2">
+                    <ul class="list-disc pl-5">
+                        <li>Nature et fonction des mots</li>
+                        <li>Valeurs des temps et modes verbaux</li>
+                        <li>Types de phrases et propositions</li>
+                    </ul>
+                </div>
+                <div class="bg-blue-50 p-3 rounded">
+                    <p><strong>Exemple :</strong> "La phrase simple <em>Mon cœur était trop plein pour parler</em> crée une rupture de rythme"</p>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h4 class="font-bold text-blue-600 mb-2">S - Procédés Stylistiques</h4>
+                <p class="text-gray-600 italic mb-2">Les figures de style et effets d'écriture</p>
+                <div class="bg-gray-100 p-3 rounded mb-2">
+                    <ul class="list-disc pl-5">
+                        <li>Comparaison, métaphore, hyperbole</li>
+                        <li>Questions rhétoriques, anaphore</li>
+                        <li>Chiasme et autres figures de style</li>
+                    </ul>
+                </div>
+                <div class="bg-blue-50 p-3 rounded">
+                    <p><strong>Exemple :</strong> "Chiasme <em>quand vous souffrez je souffre avec vous</em> soulignant l'effet miroir des émotions"</p>
+                </div>
+            </div>
+            
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h4 class="font-bold text-blue-600 mb-2">G - Procédés liés au Genre</h4>
+                <p class="text-gray-600 italic mb-2">Techniques spécifiques selon le genre littéraire du texte</p>
+                <div class="bg-gray-100 p-3 rounded mb-2">
+                    <ul class="list-disc pl-5">
+                        <li>Roman : point de vue narratif, types de discours</li>
+                        <li>Poésie : versification, strophes, rimes</li>
+                        <li>Théâtre : monologues, didascalies, coups de théâtre</li>
+                    </ul>
+                </div>
+                <div class="bg-blue-50 p-3 rounded">
+                    <p><strong>Exemple :</strong> "Le point de vue interne nous révèle l'intensité des sentiments du personnage"</p>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!doctype html>
+    <div class="mb-8">
+        <h3 class="text-xl font-bold text-purple-600 mb-4">Méthode d'application</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h4 class="font-bold text-blue-600 mb-2">Découpage et Analyse</h4>
+                <p class="text-gray-600 italic mb-2">Organisation méthodique de l'analyse</p>
+                <div class="bg-gray-100 p-3 rounded mb-2">
+                    <ol class="list-decimal pl-5">
+                        <li>Découper l'extrait en groupes de 10 lignes</li>
+                        <li>Scanner chaque partie avec le code LGSG</li>
+                        <li>Utiliser un code couleur pour le repérage</li>
+                    </ol>
+                </div>
+                <div class="bg-blue-50 p-3 rounded">
+                    <p><strong>Effet :</strong> Permet une analyse exhaustive et structurée du texte</p>
+                </div>
+            </div>
+            
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h4 class="font-bold text-blue-600 mb-2">Organisation des Observations</h4>
+                <p class="text-gray-600 italic mb-2">Structuration des relevés pour une analyse efficace</p>
+                <div class="bg-gray-100 p-3 rounded mb-2">
+                    <ul class="list-disc pl-5">
+                        <li>Tableau à 4 colonnes : Citation, Procédé, Analyse, Idée</li>
+                        <li>Analyse linéaire, même pour un commentaire composé</li>
+                        <li>Interprétation des procédés relevés</li>
+                    </ul>
+                </div>
+                <div class="bg-blue-50 p-3 rounded">
+                    <p><strong>Effet :</strong> Facilite le passage du repérage à l'interprétation</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-8">
+        <h3 class="text-xl font-bold text-purple-600 mb-4">Construction du plan d'analyse</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h4 class="font-bold text-blue-600 mb-2">Préparation</h4>
+                <p class="text-gray-600 italic mb-2">Étapes initiales avant analyse approfondie</p>
+                <div class="bg-gray-100 p-3 rounded mb-2">
+                    <ul class="list-disc pl-5">
+                        <li>Analyse du paratexte (auteur, date, titre)</li>
+                        <li>Observation de la structure (paragraphes, phrases)</li>
+                        <li>Repérage d'éléments saillants (répétitions, connecteurs)</li>
+                    </ul>
+                </div>
+                <div class="bg-blue-50 p-3 rounded">
+                    <p><strong>Objectif :</strong> Obtenir une vision globale du texte avant analyse détaillée</p>
+                </div>
+            </div>
+            
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h4 class="font-bold text-blue-600 mb-2">Élaboration du Plan</h4>
+                <p class="text-gray-600 italic mb-2">Structure progressive de l'analyse</p>
+                <div class="bg-gray-100 p-3 rounded mb-2">
+                    <ol class="list-decimal pl-5">
+                        <li>Première partie : caractériser le texte</li>
+                        <li>Deuxième partie : développer un thème essentiel</li>
+                        <li>Troisième partie : mettre en lumière l'originalité</li>
+                    </ol>
+                </div>
+                <div class="bg-blue-50 p-3 rounded">
+                    <p><strong>Effet :</strong> Permet une analyse structurée qui va du général au particulier</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-8">
+        <h3 class="text-xl font-bold text-purple-600 mb-4">Conseils pratiques</h3>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h4 class="font-bold text-blue-600 mb-2">Bonnes pratiques d'analyse</h4>
+            <p class="text-gray-600 italic mb-2">Recommandations pour une analyse efficace</p>
+            <div class="bg-gray-100 p-3 rounded mb-2">
+                <ul class="list-disc pl-5">
+                    <li>Toujours citer les procédés identifiés</li>
+                    <li>Ne pas se limiter aux figures de style</li>
+                    <li>Préférer une méthode progressive (LGSG)</li>
+                    <li>L'identification n'est pas une fin en soi, elle doit mener à l'interprétation</li>
+                </ul>
+            </div>
+            <div class="bg-blue-50 p-3 rounded">
+                <p><strong>Rappel important :</strong> L'analyse des procédés doit servir la compréhension du texte, pas simplement montrer votre connaissance technique</p>
+            </div>
+        </div>
+    </div>
+
+
+        <!-- Adaptation des styles pour les autres onglets... -->
+
+        <!-- Script pour la navigation entre onglets -->
+        <script>
+            function openTab(tabName) {
+                // Masquer tous les contenus d'onglets
+                const tabContents = document.querySelectorAll('.tab-content');
+                tabContents.forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                
+                // Réinitialiser tous les boutons d'onglets
+                const tabButtons = document.querySelectorAll('.tab-btn');
+                tabButtons.forEach(btn => {
+                    btn.classList.remove('bg-blue-600', 'text-white');
+                    btn.classList.add('bg-gray-200', 'hover:bg-gray-300');
+                });
+                
+                // Activer l'onglet sélectionné
+                document.getElementById(tabName).classList.add('active');
+                
+                // Mettre en évidence le bouton sélectionné
+                const selectedButton = document.querySelector(`button[onclick="openTab('${tabName}')"]`);
+                selectedButton.classList.remove('bg-gray-200', 'hover:bg-gray-300');
+                selectedButton.classList.add('bg-blue-600', 'text-white');
+            }
+
+            function toggleCard(card) {
+                const inner = card.querySelector('div');
+                inner.classList.toggle('rotate-y-180');
+            }
+        </script>
+    </div>
+</body>
+
+ 
+
+
 <html lang="fr">
 
 <!-- section Quiz existante: -->
